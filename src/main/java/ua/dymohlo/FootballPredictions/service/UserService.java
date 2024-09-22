@@ -22,6 +22,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final CacheManager cacheManager;
+    private final MatchService matchService;
 
     public User register(RegisterDto registerDto) {
         long startCount = 0;
@@ -47,12 +48,25 @@ public class UserService {
 
     public String loginIn(LoginInDto userLoginInDto) {
         Optional<User> user = userRepository.findByUserName(userLoginInDto.getUserName());
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new NoSuchElementException("Invalid login");
         }
-        if(!PasswordEncoderConfig.checkPassword(userLoginInDto.getPassword(), user.get().getPassword())){
+        if (!PasswordEncoderConfig.checkPassword(userLoginInDto.getPassword(), user.get().getPassword())) {
             throw new IllegalArgumentException("Invalid password");
         }
         return "Success";
     }
+
+//    public void countUsersPredictionsResult() {
+//        List<User> users = userRepository.findAll();
+//        String date = "2024-09-15"; // Hardcoded date
+//        users.stream()
+//                .map(user -> {
+//                    return matchService.compareUsersPredictions(user.getUserName(), date);
+//                })
+//                .forEach(predictions -> {
+//                    System.out.println(predictions);
+//                });
+//    }
+
 }

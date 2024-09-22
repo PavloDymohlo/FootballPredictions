@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -22,12 +23,13 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping("/future-event")
-    public List<String> getFutureMatches() {
+    public List<Object> getFutureMatches() {
         return matchService.getFutureMatches();
     }
+
     @GetMapping("/result-event")
-    public List<String> getResultMatches(){
-        return matchService.matchesResult();
+    public List<Object> getResultMatches() {
+        return matchService.compareUsersPredictions();
     }
 
     @PostMapping("/predictions")

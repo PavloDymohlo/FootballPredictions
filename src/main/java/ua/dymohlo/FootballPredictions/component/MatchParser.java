@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -15,12 +17,13 @@ public class MatchParser {
 
     private final ObjectMapper objectMapper;
 
-    public List<String> parseMatches(String json) throws IOException {
-        List<String> matchResults = new ArrayList<>();
+    public List<Object> parseMatches(String json) throws IOException {
+        List<Object> matchResults = new ArrayList<>();
         JsonNode rootNode = objectMapper.readTree(json);
         String competitionName = rootNode.path("competition").path("name").asText();
-        matchResults.add(competitionName);
-        matchResults.add("");
+        Map<String, String> competitionInfo = new HashMap<>();
+        competitionInfo.put("competition", competitionName);
+        matchResults.add(competitionInfo);
         JsonNode matchesNode = rootNode.path("matches");
         for (JsonNode matchNode : matchesNode) {
             String homeTeam = matchNode.path("homeTeam").path("name").asText();
@@ -35,28 +38,25 @@ public class MatchParser {
                 homeScore = "?";
                 awayScore = "?";
             }
-            String homeResult = homeTeam + " " + homeScore;
-            String awayResult = awayTeam + " " + awayScore;
-            matchResults.add(homeResult);
-            matchResults.add(awayResult);
-            matchResults.add("");
+            List<String> matchInfo = new ArrayList<>();
+            matchInfo.add(homeTeam + " " + homeScore);
+            matchInfo.add(awayTeam + " " + awayScore);
+            matchResults.add(matchInfo);
         }
         return matchResults;
     }
-
-    public int matchesCount(String json) throws IOException {
-        List<String> matchResults = parseMatches(json);
-        int matchCount = 0;
-
-        // Ітеруємося по результатах та рахуємо рядки, що містять команди
-        for (String result : matchResults) {
-            if (result.contains(" ?")) { // Перевіряємо наявність команд
-                matchCount++;
+    public int countTotalMatches(String json) throws IOException {
+        List<Object> parsedMatches = parseMatches(json);
+        int totalMatches = 0;
+        for (Object obj : parsedMatches) {
+            if (obj instanceof List) {
+                List<?> matchInfo = (List<?>) obj;
+                if (matchInfo.size() == 2) {
+                    totalMatches++;
+                }
             }
         }
 
-        // Повертаємо кількість матчів
-        return matchCount / 2; // Кожен матч представлений двічі (домашня та виїзна команда)
+        return totalMatches;
     }
-
 }
