@@ -45,8 +45,8 @@ public class MatchParser {
         }
         return matchResults;
     }
-    public int countTotalMatches(String json) throws IOException {
-        List<Object> parsedMatches = parseMatches(json);
+
+    public int countTotalMatches(List<Object> parsedMatches) {
         int totalMatches = 0;
         for (Object obj : parsedMatches) {
             if (obj instanceof List) {
@@ -56,7 +56,6 @@ public class MatchParser {
                 }
             }
         }
-
         return totalMatches;
     }
 }

@@ -27,10 +27,10 @@ public class MatchController {
         return matchService.getFutureMatches();
     }
 
-    @GetMapping("/result-event")
-    public List<Object> getResultMatches() {
-        return matchService.compareUsersPredictions();
-    }
+//    @GetMapping("/result-event")
+//    public List<Object> getResultMatches() {
+//        return matchService.compareUsersPredictions();
+//    }
 
     @PostMapping("/predictions")
     public String usersPredictions(@RequestBody PredictionDTO request) {

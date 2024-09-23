@@ -22,8 +22,8 @@ public class RegisterController {
     @PostMapping
     public User register(@RequestBody RegisterDto registerDto, HttpServletResponse response) {
         User user = userService.register(registerDto);
-        response.setHeader("Location", "/office");
-        response.setStatus(HttpStatus.FOUND.value());
+//        response.setHeader("Location", "/office");
+//        response.setStatus(HttpStatus.FOUND.value());
         return user;
     }
 }

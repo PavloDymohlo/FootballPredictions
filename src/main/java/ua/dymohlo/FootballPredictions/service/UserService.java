@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import ua.dymohlo.FootballPredictions.DTO.RegisterDto;
 import ua.dymohlo.FootballPredictions.DTO.LoginInDto;
 import ua.dymohlo.FootballPredictions.Entity.User;
-import ua.dymohlo.FootballPredictions.configuration.CacheConfig;
 import ua.dymohlo.FootballPredictions.configuration.PasswordEncoderConfig;
 import ua.dymohlo.FootballPredictions.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -57,16 +57,48 @@ public class UserService {
         return "Success";
     }
 
-//    public void countUsersPredictionsResult() {
-//        List<User> users = userRepository.findAll();
-//        String date = "2024-09-15"; // Hardcoded date
-//        users.stream()
-//                .map(user -> {
-//                    return matchService.compareUsersPredictions(user.getUserName(), date);
-//                })
-//                .forEach(predictions -> {
-//                    System.out.println(predictions);
-//                });
-//    }
+    public void countUsersPredictionsResult() {
+        List<User> users = userRepository.findAll();
+        String date = "2024-09-15";
+        users.stream()
+                .map(user -> {
+                    return matchService.compareUsersPredictions(user.getUserName(), date);
+                })
+                .forEach(predictions -> {
+                });
+    }
 
+    public List<User> rankingPosition() {
+        List<User> users = userRepository.findAll();
+        Collections.sort(users, (u1, u2) -> {
+            int totalScoreComparison = Long.compare(u2.getTotalScore(), u1.getTotalScore());
+            if (totalScoreComparison != 0) {
+                return totalScoreComparison;
+            }
+            int trophyCountComparison = Long.compare(u2.getTrophyCount(), u1.getTrophyCount());
+            if (trophyCountComparison != 0) {
+                return trophyCountComparison;
+            }
+            return Long.compare(u2.getMonthlyScore(), u1.getMonthlyScore());
+        });
+        long currentRank = 1;
+        long sameRankCount = 0;
+        for (int i = 0; i < users.size(); i++) {
+            User currentUser = users.get(i);
+            if (i > 0) {
+                User previousUser = users.get(i - 1);
+                if (currentUser.getTotalScore() == previousUser.getTotalScore() &&
+                        currentUser.getTrophyCount() == previousUser.getTrophyCount() &&
+                        currentUser.getMonthlyScore() == previousUser.getMonthlyScore()) {
+                    sameRankCount++;
+                } else {
+                    currentRank += sameRankCount + 1;
+                    sameRankCount = 0;
+                }
+            }
+            currentUser.setRankingPosition(currentRank);
+        }
+        System.out.println(users);
+        return users;
+    }
 }
