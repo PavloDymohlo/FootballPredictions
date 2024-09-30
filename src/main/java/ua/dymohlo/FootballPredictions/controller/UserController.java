@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/predictions")
+    @PostMapping("/send-predictions")
     public String usersPredictions(@RequestBody PredictionDTO request) {
         userService.cacheUsersPredictions(request);
         return "Success";

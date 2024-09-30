@@ -40,16 +40,13 @@ h4 {
 .competition {
     background-color: #fff;
     background: rgba(255, 255, 255, 0.9);
-    margin: 10px; /* Зверніть увагу на виправлення тут, без дефісу */
+    margin: 10px;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    line-height: 1.2; /* Можна додати це, щоб вплинути на всі рядки */
 }
 
-.competition span {
-    margin-top: 1px; /* Зменшує відстань між рядками */
-}
+
 
 .match {
     display: flex;
@@ -88,10 +85,47 @@ h4 {
 }
 
 .correct-prediction {
-/*    background-color: #d4edda;*/
-    background-color: rgba(212, 237, 218, 0.8);
+    background-color: rgba(212, 237, 218, 0.7);
 }
 
 .date-group {
     margin-bottom: 30px;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Для Firefox */
+}
+
+/* Стилі для блоку з повідомленням про помилку */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none; /* Спочатку приховане */
+}
+
+button {
+    background-color: #42C2DF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    width: 100%;            /* Ширина кнопки */
+    display: block;           /* Робимо кнопку блоковим елементом */
+    margin: 20px auto;        /* Вирівнювання по центру і відступи зверху та знизу */
+    padding: 10px 0;          /* Внутрішні відступи для збільшення висоти */
+    text-align: center;       /* Текст по центру */
+    border-radius: 10px;
+}
+
+
+button:hover {
+    background-color: #3594A9;
 }
