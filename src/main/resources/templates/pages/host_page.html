@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Page</title>
+    <link rel="stylesheet" type="text/css" href="/css/host_page.css"/>
+    <link rel="icon" href="ico/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <h2>Реєстрація</h2>
+    <form id="registrationForm" action="/register" method="post">
+        <label for="register-login">Логін(латинськими символами):</label>
+        <input placeholder="Введи свій псевдонім" type="text" id="register-login" name="login" required>
+        <label for="register-password">Пароль:</label>
+        <input placeholder="Придумай пароль" type="password" id="register-password" name="password" required>
+        <label for="register-confirm-password">Підтвердження паролю:</label>
+        <input placeholder="Повтори вигаданий пароль" type="password" id="register-confirm-password" name="confirm_password" required>
+        <button type="submit">Зареєструватись</button>
+    </form>
+</div>
+<div id="message" class="message"></div>
+<div class="container">
+    <h2>Вхід</h2>
+    <form id="loginForm" action="/login" method="post">
+        <label for="login-login">Логін:</label>
+        <input placeholder="Введи логін" type="text" id="login-login" name="login" required>
+        <label for="login-password">Пароль:</label>
+        <input placeholder="Введи пароль" type="password" id="login-password" name="password" required>
+        <button type="submit">Увійти</button>
+    </form>
+</div>
+<script src="/script/host_page.js"></script>
+</body>
+</html>

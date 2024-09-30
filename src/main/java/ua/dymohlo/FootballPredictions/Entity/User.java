@@ -25,8 +25,10 @@ public class User {
     private long monthlyScore;
     @Column(name = "total_score")
     private long totalScore;
+    @Column(name = "prediction_count")
+    private long predictionCount;
     @Column(name = "percent_guessed_matches")
-    private long percentGuessedMatches;
+    private int percentGuessedMatches;
     @Column(name = "password")
     private String password;
 }

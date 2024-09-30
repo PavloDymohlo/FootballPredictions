@@ -7,24 +7,31 @@ import org.springframework.stereotype.Component;
 import ua.dymohlo.FootballPredictions.service.MatchService;
 import ua.dymohlo.FootballPredictions.service.UserService;
 
+import java.time.LocalDate;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateDataSchedule {
-    private final MatchService matchService;
     private final UserService userService;
+    private final MatchService matchService;
 
         //@Scheduled(cron = "0 0 1 * * *", zone = "Europe/Kiev")
-    @Scheduled(cron = "0 44 23 * * *", zone = "Europe/Kiev")
-    public void addNewEvents() {
+    @Scheduled(cron = "0 40 22 * * *", zone = "Europe/Kiev")
+    public void getFutureMatches() {
         matchService.getFutureMatches();
     }
-    @Scheduled(cron = "0 38 23 * * *", zone = "Europe/Kiev")
-    public  void checkUserPredictionsResult(){
+
+    @Scheduled(cron = "0 17 12 * * *", zone = "Europe/Kiev")
+    public void getMatchesResultFromApi() {
+        matchService.getMatchesResultFromApi();
+    }
+    @Scheduled(cron = "0 33 22 * * *", zone = "Europe/Kiev")
+    public  void countUsersPredictionsResult(){
         userService.countUsersPredictionsResult();
     }
-    @Scheduled(cron = "0 04 00 * * *", zone = "Europe/Kiev")
-    public void checkUsersRankingPosition(){
+    @Scheduled(cron = "0 46 20 * * *", zone = "Europe/Kiev")
+    public void rankingPosition(){
         userService.rankingPosition();
     }
 }

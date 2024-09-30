@@ -21,7 +21,7 @@ public class LoginInController {
     @PostMapping
     public String loginIn(@RequestBody LoginInDto loginInDto, HttpServletResponse response) {
         userService.loginIn(loginInDto);
-        response.setHeader("Location", "/office");
+        response.setHeader("Location", "/office-page");
         response.setStatus(HttpStatus.FOUND.value());
         return "Success";
     }

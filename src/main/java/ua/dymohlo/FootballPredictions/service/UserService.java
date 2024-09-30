@@ -4,17 +4,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import ua.dymohlo.FootballPredictions.DTO.MatchStatusDto;
+import ua.dymohlo.FootballPredictions.DTO.PredictionDTO;
 import ua.dymohlo.FootballPredictions.DTO.RegisterDto;
 import ua.dymohlo.FootballPredictions.DTO.LoginInDto;
 import ua.dymohlo.FootballPredictions.Entity.User;
+import ua.dymohlo.FootballPredictions.component.MatchParser;
 import ua.dymohlo.FootballPredictions.configuration.PasswordEncoderConfig;
+import ua.dymohlo.FootballPredictions.repository.CompetitionRepository;
 import ua.dymohlo.FootballPredictions.repository.UserRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,24 +32,39 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final CacheManager cacheManager;
+    private final WebClient webClient;
+    private final MatchParser matchParser;
+    private final ApplicationContext applicationContext;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final CompetitionRepository competitionRepository;
     private final MatchService matchService;
 
     public User register(RegisterDto registerDto) {
         long startCount = 0;
         long userRankingPosition = calculateUserRankingPosition();
+        String userName = registerDto.getUserName();
+        checkUserNameInLatin(userName);
         String passwordEncoded = PasswordEncoderConfig.encoderPassword(registerDto.getPassword());
-        if (userRepository.findByUserName(registerDto.getUserName()).isPresent()) {
-            throw new IllegalArgumentException("This name is already taken");
+        if (userRepository.findByUserName(userName).isPresent()) {
+            throw new IllegalArgumentException("Цей псевдонім вже використовується!");
         }
         User user = User.builder()
-                .userName(registerDto.getUserName())
+                .userName(userName)
                 .password(passwordEncoded)
                 .rankingPosition(userRankingPosition)
                 .trophyCount(startCount)
                 .monthlyScore(startCount)
                 .totalScore(startCount)
+                .predictionCount(startCount)
+                .percentGuessedMatches((int) startCount)
                 .build();
         return userRepository.save(user);
+    }
+
+    private void checkUserNameInLatin(String userName) {
+        if (userName.chars().anyMatch(ch -> Character.UnicodeBlock.of(ch).equals(Character.UnicodeBlock.CYRILLIC))) {
+            throw new IllegalArgumentException("Введіть псевдонім латинськими символами!");
+        }
     }
 
     private long calculateUserRankingPosition() {
@@ -49,23 +74,150 @@ public class UserService {
     public String loginIn(LoginInDto userLoginInDto) {
         Optional<User> user = userRepository.findByUserName(userLoginInDto.getUserName());
         if (user.isEmpty()) {
-            throw new NoSuchElementException("Invalid login");
+            throw new NoSuchElementException("Невірний логін");
         }
         if (!PasswordEncoderConfig.checkPassword(userLoginInDto.getPassword(), user.get().getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new IllegalArgumentException("Невірний пароль");
         }
         return "Success";
     }
 
+    @CachePut(value = "userPredictions", key = "#predictionDTO.userName + '_' + #predictionDTO.matchDate")
+    public PredictionDTO cacheUsersPredictions(PredictionDTO predictionDTO) {
+        log.info("Caching predictions for user: {} on date: {}", predictionDTO.getUserName(), predictionDTO.getMatchDate());
+        Optional<User> optionalUser = userRepository.findByUserName(predictionDTO.getUserName());
+        User user = optionalUser.get();
+        long sumNewPredictions = matchParser.countTotalMatches(predictionDTO.getPredictions());
+        user.setPredictionCount(user.getPredictionCount() + sumNewPredictions);
+        userRepository.save(user);
+        log.info("The number of forecasts for the user " + user.getUserName() + "  increased by " + sumNewPredictions + " forecasts.");
+        return predictionDTO;
+    }
+
+
     public void countUsersPredictionsResult() {
         List<User> users = userRepository.findAll();
-        String date = "2024-09-15";
-        users.stream()
-                .map(user -> {
-                    return matchService.compareUsersPredictions(user.getUserName(), date);
-                })
-                .forEach(predictions -> {
-                });
+        String date = LocalDate.now().minusDays(1).toString();
+
+        users.forEach(user -> {
+            updateUserScores(user.getUserName(), date);
+        });
+    }
+
+    public List<Object> comparePredictionsWithResults(String userName, String date) {
+        List<Object> results = matchService.getMatchesFromCacheByDate(date);
+        PredictionDTO predictions = getUsersPredictions(userName, date);
+        List<Object> onlyMatchResult = matchesResultParser(results);
+        List<Object> userPredictions = userPredictionsParser(predictions);
+        List<Object> correctResult = new ArrayList<>();
+        int numberOfMatches = Math.min(onlyMatchResult.size(), userPredictions.size());
+        for (int i = 0; i < numberOfMatches; i++) {
+            Object matchResult = onlyMatchResult.get(i);
+            Object userPrediction = userPredictions.get(i);
+            if (matchesAreEqual(matchResult, userPrediction)) {
+                correctResult.add(matchResult);
+            }
+        }
+        System.out.println("Результати: " + onlyMatchResult);
+        System.out.println("Прогноз користувача " + userName + ": " + userPredictions);
+        System.out.println("Правильні прогнози для " + userName + ": " + correctResult);
+
+        return correctResult;
+    }
+
+    public void updateUserScores(String userName, String date) {
+        Optional<User> optionalUser = userRepository.findByUserName(userName);
+        if (!optionalUser.isPresent()) {
+            return;
+        }
+        User user = optionalUser.get();
+        List<Object> correctResults = comparePredictionsWithResults(userName, date);
+        int userPoint = correctResults.size();
+        user.setMonthlyScore(updateUserMonthlyScore(user, date, userPoint));
+        user.setTotalScore(user.getTotalScore() + userPoint);
+        user.setPercentGuessedMatches(updatePercentGuessedMatches(user));
+        userRepository.save(user);
+        LocalDate matchDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        YearMonth yearMonth = YearMonth.from(matchDate);
+        LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
+        if (matchDate.equals(lastDayOfMonth)) {
+            System.out.println("Матчі відбулися в останній день місяця! Перевіряємо результати трофеїв...");
+            List<User> usersWithTrophy = userTrophyCount();
+            System.out.println("Користувачі, які отримали трофей: " + usersWithTrophy);
+        }
+    }
+
+    @Cacheable(value = "userPredictions", key = "#userName + '_' + #matchDate", unless = "#result == null")
+    public PredictionDTO getUsersPredictions(String userName, String matchDate) {
+        String key = "userPredictions::" + userName + "_" + matchDate;
+        Object cachedValue = redisTemplate.opsForValue().get(key);
+        if (cachedValue instanceof PredictionDTO) {
+            System.out.println("for front: " + cachedValue);
+            return (PredictionDTO) cachedValue;
+        }
+        return null;
+    }
+
+    private List<Object> matchesResultParser(List<Object> results) {
+        List<Object> onlyMatchResults = new ArrayList<>();
+        for (Object result : results) {
+            if (!(result instanceof Map)) {
+                onlyMatchResults.add(result);
+            }
+        }
+        return onlyMatchResults;
+    }
+
+    private List<Object> userPredictionsParser(PredictionDTO predictions) {
+        List<Object> userPredictions = new ArrayList<>();
+        if (predictions != null) {
+            for (Object prediction : predictions.getPredictions()) {
+                if (!(prediction instanceof Map)) {
+                    userPredictions.add(prediction);
+                }
+            }
+        }
+        return userPredictions;
+    }
+
+    private boolean matchesAreEqual(Object matchResult, Object userPrediction) {
+        if (matchResult instanceof List && userPrediction instanceof List) {
+            List<?> matchList = (List<?>) matchResult;
+            List<?> predictionList = (List<?>) userPrediction;
+            if (matchList.size() == predictionList.size() && matchList.size() == 2) {
+                String team1Result = (String) matchList.get(0);
+                String team1Prediction = (String) predictionList.get(0);
+                String team2Result = (String) matchList.get(1);
+                String team2Prediction = (String) predictionList.get(1);
+                int team1ResultScore = extractScore(team1Result);
+                int team1PredictionScore = extractScore(team1Prediction);
+                int team2ResultScore = extractScore(team2Result);
+                int team2PredictionScore = extractScore(team2Prediction);
+                return team1ResultScore == team1PredictionScore && team2ResultScore == team2PredictionScore;
+            }
+        }
+        return false;
+    }
+
+    private int extractScore(String teamResult) {
+        String[] parts = teamResult.split(" ");
+        return Integer.parseInt(parts[parts.length - 1]);
+    }
+
+    private long updateUserMonthlyScore(User user, String date, int userPoint) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate inputDate = LocalDate.parse(date, formatter);
+        LocalDate currentDate = LocalDate.now();
+        if (inputDate.getYear() == currentDate.getYear() && inputDate.getMonth() == currentDate.getMonth()) {
+            return user.getMonthlyScore() + userPoint;
+        } else {
+            return userPoint;
+        }
+    }
+
+    private int updatePercentGuessedMatches(User user) {
+        long userPredictionCount = user.getPredictionCount();
+        return (int) Math.round((double) user.getTotalScore() / userPredictionCount * 100);
     }
 
     public List<User> rankingPosition() {
@@ -98,7 +250,67 @@ public class UserService {
             }
             currentUser.setRankingPosition(currentRank);
         }
+        userRepository.saveAll(users);
         System.out.println(users);
         return users;
     }
+
+    private List<User> userTrophyCount() {
+        List<User> users = userRepository.findAll();
+        OptionalLong maxMonthlyScoreOpt = users.stream()
+                .mapToLong(User::getMonthlyScore)
+                .max();
+        if (maxMonthlyScoreOpt.isEmpty()) {
+            return users;
+        }
+        long maxMonthlyScore = maxMonthlyScoreOpt.getAsLong();
+        List<User> usersWithMaxScore = users.stream()
+                .filter(user -> user.getMonthlyScore() == maxMonthlyScore)
+                .collect(Collectors.toList());
+        if (usersWithMaxScore.size() == 1) {
+            User topUser = usersWithMaxScore.get(0);
+            topUser.setTrophyCount(topUser.getTrophyCount() + 1);
+            userRepository.save(topUser);
+        }
+        return users;
+    }
+
+    public List<String> getFutureMatchesFromCache(String userName, String date) {
+        Cache matchesCache = cacheManager.getCache("matchesCache");
+        if (matchesCache == null) {
+            return Collections.emptyList();
+        }
+        String matchCacheKey = "matchesCache::" + date;
+        Object matchCacheValue = redisTemplate.opsForValue().get(matchCacheKey);
+        if (matchCacheValue == null) {
+            return Collections.emptyList();
+        }
+        String userPredictionKey = "userPredictions::" + userName + "_" + date;
+        Object userPredictionCache = redisTemplate.opsForValue().get(userPredictionKey);
+        if (userPredictionCache == null) {
+            return (List<String>) matchCacheValue;
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Object> getAllMatchesWithPredictionStatus(String userName, String date) {
+        List<Object> allMatches = matchService.getMatchesFromCacheByDate(date);
+        List<Object> correctPredictions = comparePredictionsWithResults(userName, date);
+        List<Object> matchesWithStatus = new ArrayList<>();
+        Map<String, Object> currentCompetition = null;
+
+        for (Object match : allMatches) {
+            if (match instanceof Map && ((Map<?, ?>) match).containsKey("competition")) {
+                currentCompetition = (Map<String, Object>) match;
+                matchesWithStatus.add(currentCompetition);
+                continue;
+            }
+            boolean isCorrect = correctPredictions.contains(match);
+            matchesWithStatus.add(new MatchStatusDto(match, isCorrect));
+        }
+        System.out.println(matchesWithStatus);
+        return matchesWithStatus;
+    }
+
+
 }

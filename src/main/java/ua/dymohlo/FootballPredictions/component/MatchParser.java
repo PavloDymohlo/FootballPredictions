@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -46,7 +43,13 @@ public class MatchParser {
         return matchResults;
     }
 
-    public int countTotalMatches(List<Object> parsedMatches) {
+
+
+
+
+
+
+    public long countTotalMatches(List<Object> parsedMatches) {
         int totalMatches = 0;
         for (Object obj : parsedMatches) {
             if (obj instanceof List) {
