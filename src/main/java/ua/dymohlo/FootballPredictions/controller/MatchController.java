@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/matches")
+@RequestMapping("/api/matches")
 public class MatchController {
     private final UserService userService;
     private final MatchService matchService;

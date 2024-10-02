@@ -19,3 +19,5 @@ public class PredictionDTO implements Serializable {
     private List<Object> predictions;
     private String matchDate;
 }
+
+

@@ -32,19 +32,15 @@ public class MatchService {
     private final CompetitionRepository competitionRepository;
     private final ApplicationContext applicationContext;
     private final MatchParser matchParser;
-    //private final RedisTemplate<String, Object> redisTemplate;
     private final WebClient webClient;
     private final CacheManager cacheManager;
-    private final UserRepository userRepository;
-    //private final ObjectMapper objectMapper;
-
     @Value("${docs.football-data.url}")
     private String apiUrl;
     @Value("${docs.football-data.key}")
     private String apiKey;
 
     public List<Object> getFutureMatches() {
-        String targetDate = LocalDate.now().plusDays(-1).toString();
+        String targetDate = LocalDate.now().plusDays(1).toString();
         Cache cache = cacheManager.getCache("matchesCache");
         if (cache != null) {
             List<Object> cachedMatches = cache.get(targetDate, List.class);

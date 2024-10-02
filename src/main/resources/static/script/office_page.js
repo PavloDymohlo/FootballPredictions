@@ -6,9 +6,12 @@ function formatDate(date) {
 }
 
 async function getMatchResult() {
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'block';
     const userName = localStorage.getItem('userName');
     if (!userName) {
         console.error('User name not found in localStorage.');
+        spinner.style.display = 'none';
         return;
     }
     const yesterday = new Date();
@@ -16,13 +19,13 @@ async function getMatchResult() {
     const formattedDate = formatDate(yesterday);
     try {
         const [matchesResponse, predictionsResponse] = await Promise.all([
-            fetch(`/user/match-status?date=${formattedDate}`, {
+            fetch(`/api/user/match-status?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
                 },
             }),
-            fetch(`/user/get-predictions?date=${formattedDate}`, {
+            fetch(`/api/user/get-predictions?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
@@ -39,6 +42,8 @@ async function getMatchResult() {
         displayMatchResult(matches, predictions.predictions);
     } catch (error) {
         console.error('Error fetching match status or predictions:', error);
+    } finally {
+        spinner.style.display = 'none';
     }
 }
 
@@ -126,9 +131,12 @@ async function displayMatchResult(matches, predictions) {
 }
 
 async function getFutureMatches() {
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'block';
     const userName = localStorage.getItem('userName');
     if (!userName) {
         console.error('User name not found in localStorage.');
+        spinner.style.display = 'none';
         return;
     }
     const results = [];
@@ -139,7 +147,7 @@ async function getFutureMatches() {
         const formattedDate = formatDate(date);
         dates.push(formattedDate);
         try {
-            const response = await fetch(`/user/event?date=${formattedDate}`, {
+            const response = await fetch(`/api/user/event?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
@@ -155,8 +163,8 @@ async function getFutureMatches() {
         }
     }
     displayFutureMatches(results, dates);
+    spinner.style.display = 'none';
 }
-
 
 function displayFutureMatches(results, dates) {
     const resultsContainer = document.getElementById('match-container');
@@ -169,11 +177,10 @@ function displayFutureMatches(results, dates) {
         dateHeader.textContent = `Матчі на ${dates[index]}`;
         dateGroup.appendChild(dateHeader);
         if (!result || result.length === 0 || (result.length === 1 && result[0].length === 0)) {
-            const noMatches = document.createElement('p');
-            noMatches.className = 'competition';
-            noMatches.textContent = 'Нових матчів для прогнозів немає.';
-            dateGroup.appendChild(noMatches);
+            return;
         } else {
+            let competitionContainer = document.createElement('div');
+            competitionContainer.className = 'competition-container';
             let currentCompetition = null;
             let competitionDiv;
             result[0].forEach(item => {
@@ -184,7 +191,7 @@ function displayFutureMatches(results, dates) {
                     const competitionHeader = document.createElement('h3');
                     competitionHeader.textContent = currentCompetition;
                     competitionDiv.appendChild(competitionHeader);
-                    dateGroup.appendChild(competitionDiv);
+                    competitionContainer.appendChild(competitionDiv);
                 } else if (Array.isArray(item) && currentCompetition) {
                     const matchDiv = document.createElement('div');
                     matchDiv.className = 'match';
@@ -195,7 +202,7 @@ function displayFutureMatches(results, dates) {
                     team1.textContent = item[0].replace(' ?', '');
                     const score1 = document.createElement('input');
                     score1.className = 'score';
-                    score1.type = 'text';
+                    score1.type = 'number';
                     score1.placeholder = '';
                     score1.style.width = '20px';
                     score1.style.height = '20px';
@@ -209,7 +216,7 @@ function displayFutureMatches(results, dates) {
                     team2.textContent = item[1].replace(' ?', '');
                     const score2 = document.createElement('input');
                     score2.className = 'score';
-                    score2.type = 'text';
+                    score2.type = 'number';
                     score2.placeholder = '';
                     score2.style.width = '20px';
                     score2.style.height = '20px';
@@ -220,47 +227,62 @@ function displayFutureMatches(results, dates) {
                     matchDiv.appendChild(team2Div);
                     competitionDiv.appendChild(matchDiv);
                     const separator = document.createElement('div');
-                    separator.style.borderTop = '1px solid rgba(0, 0, 0, 0.8)'
+                    separator.style.borderTop = '1px solid rgba(0, 0, 0, 0.8)';
                     separator.style.margin = '10px 0';
                     competitionDiv.appendChild(separator);
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'error-message';
-                    errorMessage.textContent = 'Будь ласка, заповніть обидва поля!';
-                    errorMessage.style.display = 'none';
-                    matchDiv.appendChild(errorMessage);
                 }
             });
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = 'Будь ласка, заповніть усі поля!';
+            errorMessage.style.display = 'none';
+            errorMessage.style.color = 'red';
+            errorMessage.style.textAlign = 'center';
+            errorMessage.style.fontSize = '18px';
+            errorMessage.style.width = '100%';
+            competitionContainer.appendChild(errorMessage);
             const submitButton = document.createElement('button');
             submitButton.className = 'submit-button';
             submitButton.textContent = 'Відправити';
-            competitionDiv.appendChild(submitButton);
+            competitionContainer.appendChild(submitButton);
             submitButton.addEventListener('click', () => {
                 const userName = localStorage.getItem('userName');
                 const predictions = [];
                 let allFilled = true;
-                const matches = competitionDiv.querySelectorAll('.match');
+                const matches = competitionContainer.querySelectorAll('.match');
                 matches.forEach(match => {
                     const scoreInputs = match.querySelectorAll('.score');
                     const score1 = scoreInputs[0].value.trim();
                     const score2 = scoreInputs[1].value.trim();
-                    if (!score1 || !score2) {
+                    if (!score1) {
+                        scoreInputs[0].style.border = '2px solid red';
                         allFilled = false;
-                        match.querySelector('.error-message').style.display = 'block';
                     } else {
-                        match.querySelector('.error-message').style.display = 'none';
+                        scoreInputs[0].style.border = '';
+                    }
+                    if (!score2) {
+                        scoreInputs[1].style.border = '2px solid red';
+                        allFilled = false;
+                    } else {
+                        scoreInputs[1].style.border = '';
+                    }
+                    if (score1 && score2) {
                         predictions.push({
-                            match: match.querySelector('.team-score .team').textContent,
+                            match: match.querySelectorAll('.team')[0].textContent + ' vs ' + match.querySelectorAll('.team')[1].textContent,
                             score: [score1, score2]
                         });
                     }
                 });
-                if (allFilled) {
+                if (!allFilled) {
+                    errorMessage.style.display = 'block';
+                } else {
+                    errorMessage.style.display = 'none';
                     const request = {
                         userName: userName,
                         predictions: predictions,
                         matchDate: dates[index]
                     };
-                    fetch('/user/send-predictions', {
+                    fetch('/api/user/send-predictions', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -281,17 +303,20 @@ function displayFutureMatches(results, dates) {
                         successMessage.style.padding = '10px';
                         successMessage.style.marginTop = '10px';
                         successMessage.style.textAlign = 'center';
-                        competitionDiv.appendChild(successMessage);
+                        competitionContainer.appendChild(successMessage);
                     })
                         .catch(error => {
                         console.error('There was a problem with the fetch operation:', error);
                     });
                 }
             });
+            dateGroup.appendChild(competitionContainer);
         }
         resultsContainer.appendChild(dateGroup);
     });
 }
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     getFutureMatches();

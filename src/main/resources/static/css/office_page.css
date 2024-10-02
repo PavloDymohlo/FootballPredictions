@@ -99,15 +99,15 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-    -moz-appearance: textfield; /* Для Firefox */
+    -moz-appearance: textfield;
 }
 
-/* Стилі для блоку з повідомленням про помилку */
+
 .error-message {
     color: red;
     font-size: 12px;
     margin-top: 5px;
-    display: none; /* Спочатку приховане */
+    display: none;
 }
 
 button {
@@ -117,11 +117,11 @@ button {
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.3s;
-    width: 100%;            /* Ширина кнопки */
-    display: block;           /* Робимо кнопку блоковим елементом */
-    margin: 20px auto;        /* Вирівнювання по центру і відступи зверху та знизу */
-    padding: 10px 0;          /* Внутрішні відступи для збільшення висоти */
-    text-align: center;       /* Текст по центру */
+    width: 100%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 0;
+    text-align: center;
     border-radius: 10px;
 }
 
@@ -129,3 +129,19 @@ button {
 button:hover {
     background-color: #3594A9;
 }
+
+.spinner {
+    width: 200px;
+    height: 200px;
+    background-image: url("/images/spinner.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+

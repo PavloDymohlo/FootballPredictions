@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 public class HostController {
-    @GetMapping("/host-page")
+    @GetMapping("/api/host-page")
     public String showHostPage() {
         log.info("Host page accessed.");
         return "pages/host_page";

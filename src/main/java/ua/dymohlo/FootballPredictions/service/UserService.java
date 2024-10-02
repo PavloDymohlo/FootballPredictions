@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import ua.dymohlo.FootballPredictions.DTO.MatchStatusDto;
 import ua.dymohlo.FootballPredictions.DTO.PredictionDTO;
@@ -41,7 +42,7 @@ public class UserService {
 
     public User register(RegisterDto registerDto) {
         long startCount = 0;
-        long userRankingPosition = calculateUserRankingPosition();
+        long userRankingPosition = calculateUserRankingPositionDuringRegistration();
         String userName = registerDto.getUserName();
         checkUserNameInLatin(userName);
         String passwordEncoded = PasswordEncoderConfig.encoderPassword(registerDto.getPassword());
@@ -67,7 +68,7 @@ public class UserService {
         }
     }
 
-    private long calculateUserRankingPosition() {
+    private long calculateUserRankingPositionDuringRegistration() {
         return userRepository.count() + 1;
     }
 
@@ -95,10 +96,14 @@ public class UserService {
     }
 
 
+
+
+
+
+
     public void countUsersPredictionsResult() {
         List<User> users = userRepository.findAll();
         String date = LocalDate.now().minusDays(1).toString();
-
         users.forEach(user -> {
             updateUserScores(user.getUserName(), date);
         });
@@ -118,10 +123,6 @@ public class UserService {
                 correctResult.add(matchResult);
             }
         }
-        System.out.println("Результати: " + onlyMatchResult);
-        System.out.println("Прогноз користувача " + userName + ": " + userPredictions);
-        System.out.println("Правильні прогнози для " + userName + ": " + correctResult);
-
         return correctResult;
     }
 
@@ -133,18 +134,10 @@ public class UserService {
         User user = optionalUser.get();
         List<Object> correctResults = comparePredictionsWithResults(userName, date);
         int userPoint = correctResults.size();
-        user.setMonthlyScore(updateUserMonthlyScore(user, date, userPoint));
+        user.setMonthlyScore(user.getMonthlyScore() + userPoint);
         user.setTotalScore(user.getTotalScore() + userPoint);
         user.setPercentGuessedMatches(updatePercentGuessedMatches(user));
         userRepository.save(user);
-        LocalDate matchDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        YearMonth yearMonth = YearMonth.from(matchDate);
-        LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
-        if (matchDate.equals(lastDayOfMonth)) {
-            System.out.println("Матчі відбулися в останній день місяця! Перевіряємо результати трофеїв...");
-            List<User> usersWithTrophy = userTrophyCount();
-            System.out.println("Користувачі, які отримали трофей: " + usersWithTrophy);
-        }
     }
 
     @Cacheable(value = "userPredictions", key = "#userName + '_' + #matchDate", unless = "#result == null")
@@ -204,17 +197,6 @@ public class UserService {
         return Integer.parseInt(parts[parts.length - 1]);
     }
 
-    private long updateUserMonthlyScore(User user, String date, int userPoint) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate inputDate = LocalDate.parse(date, formatter);
-        LocalDate currentDate = LocalDate.now();
-        if (inputDate.getYear() == currentDate.getYear() && inputDate.getMonth() == currentDate.getMonth()) {
-            return user.getMonthlyScore() + userPoint;
-        } else {
-            return userPoint;
-        }
-    }
-
     private int updatePercentGuessedMatches(User user) {
         long userPredictionCount = user.getPredictionCount();
         return (int) Math.round((double) user.getTotalScore() / userPredictionCount * 100);
@@ -255,7 +237,7 @@ public class UserService {
         return users;
     }
 
-    private List<User> userTrophyCount() {
+    public List<User> userTrophyCount() {
         List<User> users = userRepository.findAll();
         OptionalLong maxMonthlyScoreOpt = users.stream()
                 .mapToLong(User::getMonthlyScore)
@@ -272,8 +254,19 @@ public class UserService {
             topUser.setTrophyCount(topUser.getTrophyCount() + 1);
             userRepository.save(topUser);
         }
+        resetUserMonthlyScore(users);
         return users;
     }
+
+    private List<User> resetUserMonthlyScore(List<User> users) {
+        long startMonthPoint = 0;
+        List<User> resetUserMonthlyScore = users.stream()
+                .peek(user -> user.setMonthlyScore(startMonthPoint))
+                .collect(Collectors.toList());
+        userRepository.saveAll(resetUserMonthlyScore);
+        return resetUserMonthlyScore;
+    }
+
 
     public List<String> getFutureMatchesFromCache(String userName, String date) {
         Cache matchesCache = cacheManager.getCache("matchesCache");
@@ -311,6 +304,4 @@ public class UserService {
         System.out.println(matchesWithStatus);
         return matchesWithStatus;
     }
-
-
 }
