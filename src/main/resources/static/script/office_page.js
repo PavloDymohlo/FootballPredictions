@@ -173,7 +173,7 @@ function displayFutureMatches(results, dates) {
         const dateGroup = document.createElement('div');
         dateGroup.className = 'date-group';
         const dateHeader = document.createElement('h2');
-        dateHeader.className = 'competition';
+        //dateHeader.className = 'competition';
         dateHeader.textContent = `Матчі на ${dates[index]}`;
         dateGroup.appendChild(dateHeader);
         if (!result || result.length === 0 || (result.length === 1 && result[0].length === 0)) {
@@ -183,11 +183,13 @@ function displayFutureMatches(results, dates) {
             competitionContainer.className = 'competition-container';
             let currentCompetition = null;
             let competitionDiv;
+            let predictions = [];
             result[0].forEach(item => {
                 if (typeof item === 'object' && item.competition) {
                     currentCompetition = item.competition;
+                    predictions.push({ competition: currentCompetition });
                     competitionDiv = document.createElement('div');
-                    competitionDiv.className = 'competition';
+                    //competitionDiv.className = 'competition';
                     const competitionHeader = document.createElement('h3');
                     competitionHeader.textContent = currentCompetition;
                     competitionDiv.appendChild(competitionHeader);
@@ -247,7 +249,6 @@ function displayFutureMatches(results, dates) {
             competitionContainer.appendChild(submitButton);
             submitButton.addEventListener('click', () => {
                 const userName = localStorage.getItem('userName');
-                const predictions = [];
                 let allFilled = true;
                 const matches = competitionContainer.querySelectorAll('.match');
                 matches.forEach(match => {
@@ -267,12 +268,15 @@ function displayFutureMatches(results, dates) {
                         scoreInputs[1].style.border = '';
                     }
                     if (score1 && score2) {
-                        predictions.push({
-                            match: match.querySelectorAll('.team')[0].textContent + ' vs ' + match.querySelectorAll('.team')[1].textContent,
-                            score: [score1, score2]
-                        });
+                        const team1 = match.querySelectorAll('.team')[0].textContent;
+                        const team2 = match.querySelectorAll('.team')[1].textContent;
+                        predictions.push([
+                            `${team1} ${score1}`,
+                            `${team2} ${score2}`
+                        ]);
                     }
-                });
+                })
+
                 if (!allFilled) {
                     errorMessage.style.display = 'block';
                 } else {
@@ -290,6 +294,7 @@ function displayFutureMatches(results, dates) {
                         body: JSON.stringify(request)
                     })
                         .then(response => {
+                        console.log(request);
                         if (response.ok) {
                             return response.text();
                         } else {
@@ -315,7 +320,6 @@ function displayFutureMatches(results, dates) {
         resultsContainer.appendChild(dateGroup);
     });
 }
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
