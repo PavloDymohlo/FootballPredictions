@@ -13,41 +13,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-//@Configuration
-//@EnableCaching
-//public class CacheConfig {
-//    @Bean
-//    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-//        RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofDays(7))
-//                .disableCachingNullValues()
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//
-//        return RedisCacheManager.builder(redisConnectionFactory)
-//                .cacheDefaults(cacheConfiguration)
-//                .build();
-//    }
-//
-//    @Bean
-//    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-//        RedisTemplate<String, Object> template = new RedisTemplate<>();
-//        template.setConnectionFactory(connectionFactory);
-//        template.setKeySerializer(new StringRedisSerializer());
-//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-//        template.setHashKeySerializer(new StringRedisSerializer());
-//        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-//        template.afterPropertiesSet();
-//        return template;
-//    }
-//
-//}
 @Configuration
 @EnableCaching
 public class CacheConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofDays(7))
+                .entryTtl(Duration.ofDays(4))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
@@ -67,4 +39,32 @@ public class CacheConfig {
         template.afterPropertiesSet();
         return template;
     }
+
 }
+//@Configuration
+//@EnableCaching
+//public class CacheConfig {
+//    @Bean
+//    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+//        RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+//                .entryTtl(Duration.ofDays(4))
+//                .disableCachingNullValues()
+//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+//
+//        return RedisCacheManager.builder(redisConnectionFactory)
+//                .cacheDefaults(cacheConfiguration)
+//                .build();
+//    }
+//
+//    @Bean
+//    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+//        RedisTemplate<String, Object> template = new RedisTemplate<>();
+//        template.setConnectionFactory(connectionFactory);
+//        template.setKeySerializer(new StringRedisSerializer());
+//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        template.setHashKeySerializer(new StringRedisSerializer());
+//        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        template.afterPropertiesSet();
+//        return template;
+//    }
+//}

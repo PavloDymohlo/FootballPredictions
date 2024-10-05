@@ -19,24 +19,24 @@ public class UpdateDataSchedule {
     private final MatchService matchService;
 
         //@Scheduled(cron = "0 0 1 * * *", zone = "Europe/Kiev")
-    @Scheduled(cron = "0 32 13 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 22 00 * * *", zone = "Europe/Kiev")
     public void getFutureMatches() {
         matchService.getFutureMatches();
     }
 
-    @Scheduled(cron = "0 10 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 24 00 * * *", zone = "Europe/Kiev")
     public void getMatchesResultFromApi() {
         matchService.getMatchesResultFromApi();
     }
-    @Scheduled(cron = "0 11 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 25 00 * * *", zone = "Europe/Kiev")
     public  void countUsersPredictionsResult(){
         userService.countUsersPredictionsResult();
     }
-    @Scheduled(cron = "0 12 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 26 00 * * *", zone = "Europe/Kiev")
     public void rankingPosition(){
         userService.rankingPosition();
     }
-    @Scheduled(cron = "0 13 00 L * ?", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 27 00 L * ?", zone = "Europe/Kiev")
     public void userTrophyCount(){
         userService.userTrophyCount();
     }

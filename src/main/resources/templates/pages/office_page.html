@@ -5,9 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User's office</title>
     <link rel="stylesheet" type="text/css" href="/css/office_page.css"/>
-    <link rel="icon" href="ico/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/ico/favicon.ico" type="image/x-icon">
 </head>
-<body><div id="resultsContainer1"></div>
+<body>
+<div class="burger-menu" id="burgerButton" onclick="toggleMenu()">&#9776;</div>
+<div class="menu" id="submenu">
+    <div class="menu-header">
+        <button class="close-button" onclick="toggleMenu()">✖</button>
+    </div>
+    <button onclick="showStatistics()">Статистика</button>
+    <button onclick="showRules()">Правила гри</button>
+</div>
 <div id="resultsContainer"></div>
 <div id="match-container"></div>
 <div id="spinner" class="spinner" style="display: none;"></div>
