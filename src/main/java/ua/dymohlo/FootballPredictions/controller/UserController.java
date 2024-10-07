@@ -77,4 +77,9 @@ public class UserController {
         return Collections.singletonList(userService.getAllMatchesWithPredictionStatus(userName, date));
     }
 
+    @GetMapping("/users")
+    public List<Object> allUsersList(){
+        return Collections.singletonList(userService.allUsers());
+    }
+
 }

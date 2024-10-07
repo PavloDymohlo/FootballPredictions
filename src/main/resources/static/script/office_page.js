@@ -809,7 +809,8 @@ function toggleMenu() {
 
 
 function showStatistics() {
-    alert('Statistics button clicked!');
+    event.preventDefault();
+    window.location.href = '/api/statistic-page';
 }
 
 function showRules() {

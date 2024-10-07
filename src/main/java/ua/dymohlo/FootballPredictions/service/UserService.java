@@ -365,6 +365,7 @@ public class UserService {
         checkUserNameInLatin(userName);
         String passwordEncoded = PasswordEncoderConfig.encoderPassword(registerDto.getPassword());
         if (userRepository.findByUserName(userName).isPresent()) {
+            log.error("user with userName " + userName + " already exists!");
             throw new IllegalArgumentException("Цей псевдонім вже використовується!");
         }
         User user = User.builder()
@@ -412,11 +413,6 @@ public class UserService {
         log.info("The number of forecasts for the user " + user.getUserName() + "  increased by " + sumNewPredictions + " forecasts.");
         return predictionDTO;
     }
-
-
-
-
-
 
 
     public void countUsersPredictionsResult() {
@@ -621,5 +617,9 @@ public class UserService {
         }
         System.out.println(matchesWithStatus);
         return matchesWithStatus;
+    }
+
+    public List<User> allUsers() {
+        return userRepository.findAll();
     }
 }
