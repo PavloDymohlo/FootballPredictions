@@ -23,6 +23,9 @@ import ua.dymohlo.FootballPredictions.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 //@Service
@@ -217,8 +220,43 @@ public class MatchService {
         if (!combinedMatches.isEmpty() && cache != null) {
             cache.put(targetDate, combinedMatches);
         }
+
         return combinedMatches;
     }
+
+
+//    public List<Object> getMatchesResultFromApi() {
+//        String targetDate = LocalDate.now().minusDays(1).toString();
+//        List<Competition> competitions = competitionRepository.findAll();
+//        List<String> competitionApiIds = competitions.stream()
+//                .map(Competition::getCompetitionApiId)
+//                .collect(Collectors.toList());
+//        List<Object> combinedMatches = new ArrayList<>();
+//        boolean hasPendingMatches = false;
+//        for (String competitionApiId : competitionApiIds) {
+//            List<Object> matches = getMatchService().getMatchesForDate(competitionApiId, targetDate);
+//            if (matches.stream().anyMatch(match -> match instanceof List &&
+//                    ((List<?>) match).get(0).toString().contains("?"))) {
+//                hasPendingMatches = true;
+//                break;
+//            }
+//            combinedMatches.addAll(matches);
+//        }
+//        log.info("List of matches on the date " + targetDate + ": " + combinedMatches);
+//        Cache cache = cacheManager.getCache("matchesCache");
+//        if (!combinedMatches.isEmpty() && cache != null) {
+//            cache.put(targetDate, combinedMatches);
+//        }
+//        if (hasPendingMatches) {
+//            log.warn("Matches with pending scores found. Retrying in 10 minutes.");
+//            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+//            scheduler.schedule(this::getMatchesResultFromApi, 10, TimeUnit.MINUTES);
+//            scheduler.shutdown();
+//            return Collections.emptyList();
+//        }
+//        return combinedMatches;
+//    }
+
 
 
     private MatchService getMatchService() {
@@ -282,3 +320,4 @@ public class MatchService {
         return Collections.emptyList();
     }
 }
+

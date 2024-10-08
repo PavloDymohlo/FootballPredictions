@@ -5,55 +5,6 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-
-//async function userData() {
-//    const spinner = document.getElementById('spinner');
-//    spinner.style.display = 'block';
-//    const userName = localStorage.getItem('userName');
-//
-//    if (!userName) {
-//        console.error('User name not found in localStorage.');
-//        if (spinner) spinner.style.display = 'none';
-//        return;
-//    }
-//    try {
-//        if (spinner) spinner.style.display = 'block';
-//        const response = await fetch(`/api/user/user-info?userName=${encodeURIComponent(userName)}`);
-//        if (!response.ok) {
-//            throw new Error(`Error fetching user info: ${response.statusText}`);
-//        }
-//        const userInfo = await response.json();
-//        const userInfoDiv = document.getElementById('user-info');
-//        if (userInfoDiv) {
-//            userInfoDiv.innerHTML = `
-//        <div class="user-name">
-//            <p>Гравець: ${userInfo.userName}</p>
-//        </div>
-//        <div class="user-data-columns">
-//            <div class="column">
-//                <p>Позиція в рейтингу: ${userInfo.rankingPosition}</p>
-//                <p>К-сть трофеїв: ${userInfo.trophyCount}</p>
-//                <p>Відгаданих матчів за місяць: ${userInfo.monthlyScore}</p>
-//            </div>
-//            <div class="column">
-//                <p>Всього відгаданих матчів: ${userInfo.totalScore}</p>
-//                <p>Зроблено прогнозів: ${userInfo.predictionCount}</p>
-//                <p>Відсоток відгаданих матчів: ${userInfo.percentGuessedMatches}%</p>
-//            </div>
-//        </div>
-//    `;
-//        }
-//
-//    } catch (error) {
-//        console.error('Error:', error);
-//    } finally {
-//        if (spinner) spinner.style.display = 'none';
-//    }
-//}
-
-
-
-
 //async function getMatchResult() {
 //    const spinner = document.getElementById('spinner');
 //    spinner.style.display = 'block';
@@ -98,6 +49,7 @@ function formatDate(date) {
 
 async function getMatchResult() {
     const spinner = document.getElementById('spinner');
+    const resultsContainer = document.getElementById('resultsContainer');
     spinner.style.display = 'block';
     const userName = localStorage.getItem('userName');
     if (!userName) {
@@ -123,8 +75,18 @@ async function getMatchResult() {
                 },
             })
         ]);
+        if (matchesResponse.status === 404) {
+            const message = `${formattedDate} матчі не відбувалися.<br>Очікуйте наступних результатів.`;
+            const container = document.createElement('div');
+            container.className = 'date-group';
+            container.innerHTML = message;
+            container.style.textAlign = 'center';
+            resultsContainer.appendChild(container);
+            return;
+        }
         const matches = await matchesResponse.json();
         let predictions;
+
         if (predictionsResponse.status === 204) {
             predictions = { predictions: 'no_content' };
         } else {
@@ -137,6 +99,7 @@ async function getMatchResult() {
         spinner.style.display = 'none';
     }
 }
+
 
 
 async function displayMatchResult(matches, predictions) {
@@ -341,6 +304,7 @@ async function getFutureMatches() {
             console.error('Error fetching data:', error);
         }
     }
+    console.log(results);
     displayFutureMatches(results, dates);
     spinner.style.display = 'none';
 }
@@ -513,6 +477,182 @@ async function getFutureMatches() {
 //}
 
 
+//function displayFutureMatches(results, dates) {
+//    const resultsContainer = document.getElementById('match-container');
+//    resultsContainer.innerHTML = '';
+//
+//    const currentDate = new Date();
+//    const formattedCurrentDate = formatDate(currentDate);
+//
+//    results.forEach((result, index) => {
+//        const dateGroup = document.createElement('div');
+//        dateGroup.className = 'date-group';
+//
+//        const dateHeader = document.createElement('h2');
+//        const matchDate = dates[index];
+//        dateHeader.textContent = `Матчі на ${dates[index]}`;
+//        dateGroup.appendChild(dateHeader);
+//        const isCurrentDate = matchDate === formattedCurrentDate;
+//
+//        if (!result || result.length === 0 || (result.length === 1 && result[0].length === 0)) {
+//            return;
+//        } else {
+//            let competitionContainer = document.createElement('div');
+//            competitionContainer.className = 'competition-container';
+//            let currentCompetition = null;
+//            let competitionDiv;
+//            let predictions = [];
+//
+//            result[0].forEach(item => {
+//                if (typeof item === 'object' && item.competition) {
+//                    currentCompetition = item.competition;
+//                    predictions.push({ competition: currentCompetition });
+//                    competitionDiv = document.createElement('div');
+//
+//                    const competitionHeader = document.createElement('h3');
+//                    competitionHeader.textContent = currentCompetition;
+//                    competitionDiv.appendChild(competitionHeader);
+//                    competitionContainer.appendChild(competitionDiv);
+//                } else if (Array.isArray(item) && currentCompetition) {
+//                    const matchDiv = document.createElement('div');
+//                    matchDiv.className = 'match';
+//
+//                    const team1Div = document.createElement('div');
+//                    team1Div.className = 'team-score';
+//                    const team1 = document.createElement('span');
+//                    team1.className = 'team';
+//                    team1.textContent = item[0].replace(' ?', '');
+//                    const score1 = document.createElement('input');
+//                    score1.className = 'score';
+//                    score1.type = 'number';
+//                    score1.placeholder = '';
+//                    score1.style.width = '20px';
+//                    score1.style.height = '20px';
+//                    score1.style.textAlign = 'center';
+//                    score1.disabled = isCurrentDate;
+//                    team1Div.appendChild(team1);
+//                    team1Div.appendChild(score1);
+//
+//                    const team2Div = document.createElement('div');
+//                    team2Div.className = 'team-score';
+//                    const team2 = document.createElement('span');
+//                    team2.className = 'team';
+//                    team2.textContent = item[1].replace(' ?', '');
+//                    const score2 = document.createElement('input');
+//                    score2.className = 'score';
+//                    score2.type = 'number';
+//                    score2.placeholder = '';
+//                    score2.style.width = '20px';
+//                    score2.style.height = '20px';
+//                    score2.style.textAlign = 'center';
+//                    score2.disabled = isCurrentDate;
+//                    team2Div.appendChild(team2);
+//                    team2Div.appendChild(score2);
+//
+//                    matchDiv.appendChild(team1Div);
+//                    matchDiv.appendChild(team2Div);
+//                    competitionDiv.appendChild(matchDiv);
+//
+//                    const separator = document.createElement('div');
+//                    separator.style.borderTop = '1px solid rgba(0, 0, 0, 0.8)';
+//                    separator.style.margin = '10px 0';
+//                    competitionDiv.appendChild(separator);
+//                }
+//            });
+//
+//            const errorMessage = document.createElement('div');
+//            errorMessage.className = 'message error-message';
+//            errorMessage.textContent = 'Будь ласка, заповніть усі поля!';
+//            errorMessage.style.display = 'none';
+//            competitionContainer.appendChild(errorMessage);
+//
+//            const submitButton = document.createElement('button');
+//            submitButton.className = 'submit-button';
+//            submitButton.textContent = 'Відправити';
+//            submitButton.disabled = isCurrentDate;
+//            competitionContainer.appendChild(submitButton);
+//
+//            submitButton.addEventListener('click', () => {
+//                const userName = localStorage.getItem('userName');
+//                let allFilled = true;
+//                const matches = competitionContainer.querySelectorAll('.match');
+//
+//                // Clear previous success message
+//                const successMessage = competitionContainer.querySelector('.success-message');
+//                if (successMessage) {
+//                    successMessage.remove();
+//                }
+//
+//                matches.forEach(match => {
+//                    const scoreInputs = match.querySelectorAll('.score');
+//                    const score1 = scoreInputs[0].value.trim();
+//                    const score2 = scoreInputs[1].value.trim();
+//
+//                    if (!score1) {
+//                        scoreInputs[0].style.border = '2px solid red';
+//                        allFilled = false;
+//                    } else {
+//                        scoreInputs[0].style.border = '';
+//                    }
+//
+//                    if (!score2) {
+//                        scoreInputs[1].style.border = '2px solid red';
+//                        allFilled = false;
+//                    } else {
+//                        scoreInputs[1].style.border = '';
+//                    }
+//
+//                    if (score1 && score2) {
+//                        const team1 = match.querySelectorAll('.team')[0].textContent;
+//                        const team2 = match.querySelectorAll('.team')[1].textContent;
+//                        predictions.push([`${team1} ${score1}`, `${team2} ${score2}`]);
+//                    }
+//                });
+//
+//                if (!allFilled) {
+//                    errorMessage.style.display = 'block';
+//                } else {
+//                    errorMessage.style.display = 'none';
+//
+//                    const request = {
+//                        userName: userName,
+//                        predictions: predictions,
+//                        matchDate: dates[index]
+//                    };
+//
+//                    fetch('/api/user/send-predictions', {
+//                        method: 'POST',
+//                        headers: {
+//                            'Content-Type': 'application/json'
+//                        },
+//                        body: JSON.stringify(request)
+//                    })
+//                        .then(response => {
+//                        if (response.ok) {
+//                            return response.text();
+//                        } else {
+//                            throw new Error('Network response was not ok.');
+//                        }
+//                    })
+//                        .then(() => {
+//                        const successMessage = document.createElement('div');
+//                        successMessage.className = 'message success-message';
+//                        successMessage.textContent = 'Прогноз успішно збережено!';
+//                        competitionContainer.appendChild(successMessage);
+//                    })
+//                        .catch(error => {
+//                        console.error('There was a problem with the fetch operation:', error);
+//                    });
+//                }
+//            });
+//
+//            dateGroup.appendChild(competitionContainer);
+//        }
+//        resultsContainer.appendChild(dateGroup);
+//    });
+//}
+
+
 function displayFutureMatches(results, dates) {
     const resultsContainer = document.getElementById('match-container');
     resultsContainer.innerHTML = '';
@@ -530,9 +670,20 @@ function displayFutureMatches(results, dates) {
         dateGroup.appendChild(dateHeader);
         const isCurrentDate = matchDate === formattedCurrentDate;
 
+        // Перевірка на порожній результат
         if (!result || result.length === 0 || (result.length === 1 && result[0].length === 0)) {
-            return;
-        } else {
+            const message = document.createElement('div');
+            message.className = 'message no-matches';
+
+            // Додаємо текст на два рядки з допомогою <br>
+            message.innerHTML = `${dates[index]} матчів не буде.<br>Очікуйте наступних подій.`;
+
+            // Стилі для центрування тексту
+            message.style.textAlign = 'center'; // Центрування тексту по горизонталі
+
+            dateGroup.appendChild(message);
+        }
+        else {
             let competitionContainer = document.createElement('div');
             competitionContainer.className = 'competition-container';
             let currentCompetition = null;
@@ -687,6 +838,12 @@ function displayFutureMatches(results, dates) {
         resultsContainer.appendChild(dateGroup);
     });
 }
+
+
+
+
+
+
 
 
 //function displayFutureMatches(results, dates) {

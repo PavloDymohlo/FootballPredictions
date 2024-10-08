@@ -14,8 +14,8 @@ body {
 }
 
 .rules-container {
-    width: 100%;
-    max-width: 600px;
+    width: calc(100% - 40px);
+    max-width: 800px;
     background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 10px;
@@ -34,19 +34,28 @@ ul {
 
 p, ul {
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 .burger-menu {
-    background: rgba(255, 255, 255, 0.9);
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 30px;
+    right: 30px;
     cursor: pointer;
-    z-index: 1000;
-    font-size: 30px;
-    padding: 10px;
-    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 40px;
+    height: 30px;
 }
+
+.bar {
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
+    opacity: 0.8;
+}
+
 .menu {
     display: none;
     position: fixed;
@@ -59,6 +68,7 @@ p, ul {
     width: 200px;
     padding: 5px;
 }
+
 .menu button {
     display: block;
     width: 100%;
@@ -70,14 +80,17 @@ p, ul {
     color: black;
     margin: 5px 0;
 }
+
 .menu button:hover {
     background-color: #f0f0f0;
 }
+
 .menu-header {
     position: absolute;
     top: 0;
     right: 5px;
 }
+
 .close-button {
     background: none;
     border: none;
@@ -85,48 +98,58 @@ p, ul {
     cursor: pointer;
     color: black;
 }
+
 .menu-header .close-button {
     display: none;
 }
+
 .menu.open .menu-header .close-button {
     display: block;
     background: rgba(255, 255, 255, 0.9);
 }
 
-@media screen and (max-width: 800px) {
+@media (min-width: 600px) {
     .rules-container {
-        width: 1000px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 20px;
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
         border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin: 20px;
+        padding: 20px;
     }
 
     .burger-menu {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 30px;
+        right: 30px;
         cursor: pointer;
-        z-index: 1000;
-        font-size: 30px;
-        padding: 10px;
-        border-radius: 5px;
-        background: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 80px;
+        height: 60px;
+    }
+
+    .bar {
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
+        opacity: 0.8;
     }
 
     .menu {
         display: none;
         position: fixed;
         top: 40px;
-        right: 10px;
+        right: 50px;
         background: rgba(255, 255, 255, 0.9);
         border: 1px solid #ccc;
         border-radius: 5px;
         z-index: 1000;
-        width: 200px;
+        width: 400px;
         padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
+
     .menu button {
         display: block;
         width: 100%;
@@ -134,31 +157,16 @@ p, ul {
         border: none;
         background: none;
         text-align: left;
-        font-size: 16px;
+        font-size: 36px;
         color: black;
         margin: 5px 0;
     }
-    .menu button:hover {
-        background-color: #f0f0f0;
-    }
-    .menu-header {
-        position: absolute;
-        top: 0;
-        right: 5px;
-    }
+
     .close-button {
         background: none;
         border: none;
-        font-size: 18px;
+        font-size: 36px;
         cursor: pointer;
         color: black;
     }
-    .menu-header .close-button {
-        display: none;
-    }
-    .menu.open .menu-header .close-button {
-        display: block;
-        background: rgba(255, 255, 255, 0.9);
-    }
-
 }

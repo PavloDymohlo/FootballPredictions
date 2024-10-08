@@ -10,32 +10,54 @@ body {
 #users-statistic {
     max-width: 800px;
     margin: 20px auto;
-    background: rgba(255, 255, 255, 0.9); /* Напівпрозорий білий фон */
+    background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05); /* Легке затінення для кожного другого рядка */
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Завжди зелений фон для активного користувача, незалежно від його позиції */
+
 tr.highlighted-user {
-    background-color: rgba(212, 237, 218, 0.7) !important; /* Зелений фон */
+    background-color: rgba(212, 237, 218, 0.7) !important;
     color: green;
 }
 
+/* Змінити розмір тексту в заголовках таблиці */
+table th {
+    font-size: 24px; /* Встановлюєте бажаний розмір для заголовків */
+    font-weight: bold; /* Можливо, вам знадобиться зробити текст жирним */
+    padding: 5px;
+}
+
+/* Змінити розмір тексту в рядках таблиці */
+table td {
+    font-size: 30px; /* Встановлюєте бажаний розмір для тексту в рядках */
+    padding: 5px;
+    text-align: center;
+}
+
+
 .burger-menu {
-    background: rgba(255, 255, 255, 0.9);
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 30px;
+    right: 30px;
     cursor: pointer;
-    z-index: 1000;
-    font-size: 30px;
-    padding: 10px;
-    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 40px;
+    height: 30px;
+}
+
+.bar {
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
+    opacity: 0.8;
 }
 .menu {
     display: none;
@@ -83,3 +105,66 @@ tr.highlighted-user {
     background: rgba(255, 255, 255, 0.9);
 }
 
+
+@media (min-width: 600px) {
+    #users-statistic {
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .burger-menu {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 80px;
+        height: 60px;
+    }
+
+    .bar {
+        height: 10px;
+        width: 100%;
+        background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
+        opacity: 0.8;
+    }
+
+    .menu {
+        display: none;
+        position: fixed;
+        top: 40px;
+        right: 50px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        z-index: 1000;
+        width: 400px;
+        padding: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: 36px;
+        color: black;
+        margin: 5px 0;
+    }
+
+    .close-button {
+        background: none;
+        border: none;
+        font-size: 36px;
+        cursor: pointer;
+        color: black;
+    }
+}

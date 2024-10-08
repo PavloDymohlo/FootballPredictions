@@ -423,21 +423,46 @@ public class UserService {
         });
     }
 
+//    public List<Object> comparePredictionsWithResults(String userName, String date) {
+//        List<Object> results = matchService.getMatchesFromCacheByDate(date);
+//        PredictionDTO predictions = getUsersPredictions(userName, date);
+//        List<Object> onlyMatchResult = matchesResultParser(results);
+//        List<Object> userPredictions = userPredictionsParser(predictions);
+//        List<Object> correctResult = new ArrayList<>();
+//        int numberOfMatches = Math.min(onlyMatchResult.size(), userPredictions.size());
+//        for (int i = 0; i < numberOfMatches; i++) {
+//            Object matchResult = onlyMatchResult.get(i);
+//            Object userPrediction = userPredictions.get(i);
+//            if (matchesAreEqual(matchResult, userPrediction)) {
+//                correctResult.add(matchResult);
+//            }
+//        }
+//        return correctResult;
+//    }
+
     public List<Object> comparePredictionsWithResults(String userName, String date) {
-        List<Object> results = matchService.getMatchesFromCacheByDate(date);
-        PredictionDTO predictions = getUsersPredictions(userName, date);
-        List<Object> onlyMatchResult = matchesResultParser(results);
-        List<Object> userPredictions = userPredictionsParser(predictions);
-        List<Object> correctResult = new ArrayList<>();
-        int numberOfMatches = Math.min(onlyMatchResult.size(), userPredictions.size());
-        for (int i = 0; i < numberOfMatches; i++) {
-            Object matchResult = onlyMatchResult.get(i);
-            Object userPrediction = userPredictions.get(i);
-            if (matchesAreEqual(matchResult, userPrediction)) {
-                correctResult.add(matchResult);
+        try{
+            List<Object> results = matchService.getMatchesFromCacheByDate(date);
+            PredictionDTO predictions = getUsersPredictions(userName, date);
+            List<Object> onlyMatchResult = matchesResultParser(results);
+            List<Object> userPredictions = userPredictionsParser(predictions);
+            List<Object> correctResult = new ArrayList<>();
+            int numberOfMatches = Math.min(onlyMatchResult.size(), userPredictions.size());
+            for (int i = 0; i < numberOfMatches; i++) {
+                Object matchResult = onlyMatchResult.get(i);
+                Object userPrediction = userPredictions.get(i);
+                if (matchesAreEqual(matchResult, userPrediction)) {
+                    correctResult.add(matchResult);
+                }
             }
+            log.info(correctResult.toString());
+            return correctResult;
+        } catch (NullPointerException e){
+            String errorMessage = " матчі не відбувалися. Очікуйте наступних результатів.";
+            log.error(errorMessage);
+            throw new NullPointerException(date+errorMessage);
         }
-        return correctResult;
+
     }
 
     public void updateUserScores(String userName, String date) {
@@ -474,6 +499,7 @@ public class UserService {
         }
         return onlyMatchResults;
     }
+
 
     private List<Object> userPredictionsParser(PredictionDTO predictions) {
         List<Object> userPredictions = new ArrayList<>();
@@ -623,3 +649,5 @@ public class UserService {
         return userRepository.findAll();
     }
 }
+
+

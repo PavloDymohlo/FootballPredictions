@@ -16,45 +16,45 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-//@Configuration
-//@EnableWebMvc
-//public class MvcConfig implements WebMvcConfigurer {
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry
-//                .addResourceHandler("/css/**")
-//                .addResourceLocations("classpath:/static/css/");
-//        registry
-//                .addResourceHandler("/images/**")
-//                .addResourceLocations("classpath:/static/images/");
-//        registry
-//                .addResourceHandler("/script/**")
-//                .addResourceLocations("classpath:/static/script/");
-//        registry
-//                .addResourceHandler("/ico/**")
-//                .addResourceLocations("classpath:/static/ico/");
-//    }
-//
-//    @Bean
-//    public FilterRegistrationBean<CharacterEncodingFilter> filterRegistrationBean() {
-//        FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
-//        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-//        characterEncodingFilter.setEncoding("UTF-8");
-//        characterEncodingFilter.setForceEncoding(true);
-//        registrationBean.setFilter(characterEncodingFilter);
-//        return registrationBean;
-//    }
-//
-//    @Bean
-//    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
-//        return (tomcat) -> tomcat.addConnectorCustomizers(
-//                (connector) -> connector.setURIEncoding("UTF-8")
-//        );
-//    }
-//
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
-//        converters.add(new MappingJackson2HttpMessageConverter());
-//    }
-//}
+@Configuration
+@EnableWebMvc
+public class MvcConfig implements WebMvcConfigurer {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/");
+        registry
+                .addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
+        registry
+                .addResourceHandler("/script/**")
+                .addResourceLocations("classpath:/static/script/");
+        registry
+                .addResourceHandler("/ico/**")
+                .addResourceLocations("classpath:/static/ico/");
+    }
+
+    @Bean
+    public FilterRegistrationBean<CharacterEncodingFilter> filterRegistrationBean() {
+        FilterRegistrationBean<CharacterEncodingFilter> registrationBean = new FilterRegistrationBean<>();
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setEncoding("UTF-8");
+        characterEncodingFilter.setForceEncoding(true);
+        registrationBean.setFilter(characterEncodingFilter);
+        return registrationBean;
+    }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
+        return (tomcat) -> tomcat.addConnectorCustomizers(
+                (connector) -> connector.setURIEncoding("UTF-8")
+        );
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        converters.add(new MappingJackson2HttpMessageConverter());
+    }
+}

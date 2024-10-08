@@ -28,11 +28,11 @@ public class UpdateDataSchedule {
     public void getMatchesResultFromApi() {
         matchService.getMatchesResultFromApi();
     }
-    @Scheduled(cron = "0 23 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 51 00 * * *", zone = "Europe/Kiev")
     public  void countUsersPredictionsResult(){
         userService.countUsersPredictionsResult();
     }
-    @Scheduled(cron = "0 24 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 35 00 * * *", zone = "Europe/Kiev")
     public void rankingPosition(){
         userService.rankingPosition();
     }

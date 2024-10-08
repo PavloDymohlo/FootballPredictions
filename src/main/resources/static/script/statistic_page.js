@@ -121,6 +121,10 @@ function displayUsers(users) {
     usersStatisticDiv.appendChild(table);
 }
 
+
+
+
+
 function toggleMenu() {
     const submenu = document.getElementById('submenu');
     const burgerButton = document.getElementById('burgerButton');
