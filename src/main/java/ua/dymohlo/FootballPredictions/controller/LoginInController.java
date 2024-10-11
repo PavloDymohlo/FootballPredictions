@@ -14,14 +14,14 @@ import ua.dymohlo.FootballPredictions.service.UserService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/login")
+@RequestMapping("/login")
 public class LoginInController {
     private final UserService userService;
 
     @PostMapping
     public String loginIn(@RequestBody LoginInDto loginInDto, HttpServletResponse response) {
         userService.loginIn(loginInDto);
-        response.setHeader("Location", "/api/office-page");
+        response.setHeader("Location", "/office-page");
         response.setStatus(HttpStatus.FOUND.value());
         return "Success";
     }

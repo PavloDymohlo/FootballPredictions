@@ -61,7 +61,7 @@ async function fetchUsers() {
     spinner.style.display = 'block';
 
     try {
-        const response = await fetch('/api/user/users');
+        const response = await fetch('/user/users');
         if (!response.ok) {
             throw new Error('Помилка при отриманні користувачів');
         }
@@ -140,7 +140,7 @@ function toggleMenu() {
 
 function returnBack() {
     event.preventDefault();
-    window.location.href = '/api/office-page';
+    window.location.href = '/office-page';
 }
 
 document.addEventListener('DOMContentLoaded', fetchUsers);

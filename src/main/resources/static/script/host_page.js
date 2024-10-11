@@ -14,7 +14,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         userName: userName,
         password: password
     };
-    fetch('/api/register', {
+    fetch('/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         userName: userName,
         password: password
     };
-    fetch('/api/login', {
+    fetch('/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

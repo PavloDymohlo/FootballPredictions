@@ -24,8 +24,14 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/static/**", "/styles/**", "/images/**", "/js/**", "/ico/**");
+//    }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/static/**", "/styles/**", "/images/**", "/js/**", "/ico/**");
+        return (web) -> web.ignoring().requestMatchers("/static/**", "/css/**", "/images/**", "/script/**", "/ico/**");
     }
+
 }

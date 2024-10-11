@@ -15,14 +15,14 @@ import ua.dymohlo.FootballPredictions.service.UserService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/register")
+@RequestMapping("/register")
 public class RegisterController {
     private final UserService userService;
 
     @PostMapping
     public User register(@RequestBody RegisterDto registerDto, HttpServletResponse response) {
         User user = userService.register(registerDto);
-        response.setHeader("Location", "/api/office-page");
+        response.setHeader("Location", "/office-page");
         response.setStatus(HttpStatus.FOUND.value());
         return user;
     }

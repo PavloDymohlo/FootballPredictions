@@ -13,5 +13,5 @@ function toggleMenu() {
 
 function returnBack() {
     event.preventDefault();
-    window.location.href = '/api/office-page';
+    window.location.href = '/office-page';
 }

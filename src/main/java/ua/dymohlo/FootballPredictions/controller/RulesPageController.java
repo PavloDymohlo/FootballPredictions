@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class RulesPageController {
 
-    @GetMapping("/api/rules")
+    @GetMapping("/rules")
     public String showHostPage() {
         log.info("Rules page accessed.");
         return "pages/rules";

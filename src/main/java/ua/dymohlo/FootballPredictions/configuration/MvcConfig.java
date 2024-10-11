@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -34,6 +35,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addResourceHandler("/ico/**")
                 .addResourceLocations("classpath:/static/ico/");
     }
+
+
 
     @Bean
     public FilterRegistrationBean<CharacterEncodingFilter> filterRegistrationBean() {

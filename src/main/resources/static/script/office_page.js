@@ -47,6 +47,34 @@ function formatDate(date) {
 //    }
 //}
 
+async function getUserName() {
+    const spinner = document.getElementById('spinner');
+    const userNameDiv = document.getElementById('user-name');
+
+    // Показуємо спіннер
+    spinner.style.display = 'block';
+
+    // Імітація асинхронного завантаження даних (наприклад, з сервера або бази даних)
+    const userName = await new Promise((resolve) => {
+        setTimeout(() => {
+            const storedUserName = localStorage.getItem('userName');
+            resolve(storedUserName);
+        }, 1000); // Затримка на 2 секунди
+    });
+
+    // Якщо ім'я користувача не знайдено
+    if (!userName) {
+        console.error('User name not found in localStorage.');
+        userNameDiv.textContent = 'Привіт, Користувач!';
+    } else {
+        // Виводимо привітання з ім'ям користувача
+        userNameDiv.textContent = `Привіт, ${userName}!`;
+    }
+
+    // Прибираємо спіннер після завантаження
+    spinner.style.display = 'none';
+}
+
 async function getMatchResult() {
     const spinner = document.getElementById('spinner');
     const resultsContainer = document.getElementById('resultsContainer');
@@ -62,13 +90,13 @@ async function getMatchResult() {
     const formattedDate = formatDate(yesterday);
     try {
         const [matchesResponse, predictionsResponse] = await Promise.all([
-            fetch(`/api/user/match-status?date=${formattedDate}`, {
+            fetch(`/user/match-status?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
                 },
             }),
-            fetch(`/api/user/get-predictions?date=${formattedDate}`, {
+            fetch(`/user/get-predictions?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
@@ -289,7 +317,7 @@ async function getFutureMatches() {
         const formattedDate = formatDate(date);
         dates.push(formattedDate);
         try {
-            const response = await fetch(`/api/user/event?date=${formattedDate}`, {
+            const response = await fetch(`/user/event?date=${formattedDate}`, {
                 method: 'GET',
                 headers: {
                     'userName': userName,
@@ -807,7 +835,7 @@ function displayFutureMatches(results, dates) {
                         matchDate: dates[index]
                     };
 
-                    fetch('/api/user/send-predictions', {
+                    fetch('/user/send-predictions', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -967,17 +995,18 @@ function toggleMenu() {
 
 function showStatistics() {
     event.preventDefault();
-    window.location.href = '/api/statistic-page';
+    window.location.href = '/statistic-page';
 }
 
 function showRules() {
     event.preventDefault();
-        window.location.href = '/api/rules';
+        window.location.href = '/rules';
 }
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    getUserName();
     getFutureMatches();
     getMatchResult();
 });

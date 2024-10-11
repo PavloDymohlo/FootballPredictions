@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class StatisticPage {
 
-    @GetMapping("/api/statistic-page")
+    @GetMapping("/statistic-page")
     public String showStatisticPage() {
         log.info("Statistic page accessed.");
         return "pages/statistic_page";

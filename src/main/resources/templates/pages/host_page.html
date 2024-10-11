@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <h2>Реєстрація</h2>
-    <form id="registrationForm" action="/api/register" method="post">
+    <form id="registrationForm" action="/register" method="post">
         <label for="register-login">Логін(латинськими символами):</label>
         <input placeholder="Введи свій псевдонім" type="text" id="register-login" name="login" required autocomplete="username">
         <label for="register-password">Пароль:</label>
@@ -23,7 +23,7 @@
 <div id="message" class="message"></div>
 <div class="container">
     <h2>Вхід</h2>
-    <form id="loginForm" action="/api/login" method="post">
+    <form id="loginForm" action="/login" method="post">
         <label for="login-login">Логін:</label>
         <input placeholder="Введи логін" type="text" id="login-login" name="login" required autocomplete="username">
         <label for="login-password">Пароль:</label>

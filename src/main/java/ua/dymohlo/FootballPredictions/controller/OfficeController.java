@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 public class OfficeController {
-    @GetMapping("/api/office-page")
+    @GetMapping("/office-page")
     public String showOfficePage() {
         log.info("Office page accessed.");
         return "pages/office_page";
