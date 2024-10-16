@@ -20,26 +20,22 @@ body {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-
 tr.highlighted-user {
     background-color: rgba(212, 237, 218, 0.7) !important;
     color: green;
 }
 
-/* Змінити розмір тексту в заголовках таблиці */
 table th {
-    font-size: 24px; /* Встановлюєте бажаний розмір для заголовків */
-    font-weight: bold; /* Можливо, вам знадобиться зробити текст жирним */
+    font-size: 24px;
+    font-weight: bold;
     padding: 5px;
 }
 
-/* Змінити розмір тексту в рядках таблиці */
 table td {
-    font-size: 30px; /* Встановлюєте бажаний розмір для тексту в рядках */
+    font-size: 30px;
     padding: 5px;
     text-align: center;
 }
-
 
 .burger-menu {
     position: absolute;
@@ -59,6 +55,7 @@ table td {
     background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
     opacity: 0.8;
 }
+
 .menu {
     display: none;
     position: fixed;
@@ -71,6 +68,7 @@ table td {
     width: 200px;
     padding: 5px;
 }
+
 .menu button {
     display: block;
     width: 100%;
@@ -82,14 +80,17 @@ table td {
     color: black;
     margin: 5px 0;
 }
+
 .menu button:hover {
     background-color: #f0f0f0;
 }
+
 .menu-header {
     position: absolute;
     top: 0;
     right: 5px;
 }
+
 .close-button {
     background: none;
     border: none;
@@ -97,14 +98,15 @@ table td {
     cursor: pointer;
     color: black;
 }
+
 .menu-header .close-button {
     display: none;
 }
+
 .menu.open .menu-header .close-button {
     display: block;
     background: rgba(255, 255, 255, 0.9);
 }
-
 
 @media (min-width: 600px) {
     #users-statistic {

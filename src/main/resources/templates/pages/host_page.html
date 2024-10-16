@@ -12,11 +12,14 @@
     <h2>Реєстрація</h2>
     <form id="registrationForm" action="/register" method="post">
         <label for="register-login">Логін(латинськими символами):</label>
-        <input placeholder="Введи свій псевдонім" type="text" id="register-login" name="login" required autocomplete="username">
+        <input placeholder="Введи свій псевдонім" type="text" id="register-login" name="login" required
+               autocomplete="username">
         <label for="register-password">Пароль:</label>
-        <input placeholder="Придумай пароль" type="password" id="register-password" name="password" required autocomplete="new-password">
+        <input placeholder="Придумай пароль" type="password" id="register-password" name="password" required
+               autocomplete="new-password">
         <label for="register-confirm-password">Підтвердження паролю:</label>
-        <input placeholder="Повтори вигаданий пароль" type="password" id="register-confirm-password" name="confirm_password" required autocomplete="new-password">
+        <input placeholder="Повтори вигаданий пароль" type="password" id="register-confirm-password"
+               name="confirm_password" required autocomplete="new-password">
         <button type="submit">Зареєструватись</button>
     </form>
 </div>
@@ -27,215 +30,11 @@
         <label for="login-login">Логін:</label>
         <input placeholder="Введи логін" type="text" id="login-login" name="login" required autocomplete="username">
         <label for="login-password">Пароль:</label>
-        <input placeholder="Введи пароль" type="password" id="login-password" name="password" required autocomplete="current-password">
+        <input placeholder="Введи пароль" type="password" id="login-password" name="password" required
+               autocomplete="current-password">
         <button type="submit">Увійти</button>
     </form>
 </div>
 <script src="/script/host_page.js"></script>
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Host Page</title>-->
-<!--    <link rel="icon" href="/ico/favicon.ico" type="image/x-icon">-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: 'Roboto', sans-serif;-->
-<!--            background-image: url("/images/background.jpg");-->
-<!--            background-size: cover;-->
-<!--            background-position: center;-->
-<!--            background-repeat: no-repeat;-->
-<!--            background-attachment: fixed;-->
-<!--        }-->
-
-<!--        .container {-->
-<!--            position: relative;-->
-<!--            z-index: 1;-->
-<!--            margin: 20px auto;-->
-<!--            max-width: 600px;-->
-<!--            padding: 20px;-->
-<!--            background: rgba(255, 255, 255, 0.9);-->
-<!--            border-radius: 10px;-->
-<!--            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);-->
-<!--        }-->
-
-<!--        h2 {-->
-<!--            text-align: center;-->
-<!--            margin: 30px 0 20px;-->
-<!--        }-->
-
-<!--        label {-->
-<!--            display: block;-->
-<!--            margin: 10px 0 5px;-->
-<!--            font-size: 18px;-->
-<!--        }-->
-
-<!--        input[type="text"], input[type="password"], button {-->
-<!--            width: 90%;-->
-<!--            padding: 10px;-->
-<!--            border-radius: 5px;-->
-<!--            border: 1px solid #ccc;-->
-<!--            margin: 0 auto 15px;-->
-<!--            font-size: 16px;-->
-<!--            transition: border-color 0.3s;-->
-<!--            display: block;-->
-<!--        }-->
-
-<!--        input:focus {-->
-<!--            border-color: #42C2DF;-->
-<!--            outline: none;-->
-<!--        }-->
-
-<!--        button {-->
-<!--            background-color: #42C2DF;-->
-<!--            color: white;-->
-<!--            border: none;-->
-<!--            cursor: pointer;-->
-<!--            font-size: 18px;-->
-<!--            transition: background-color 0.3s;-->
-<!--        }-->
-
-<!--        button:hover {-->
-<!--            background-color: #3594A9;-->
-<!--        }-->
-
-<!--        .message {-->
-<!--            display: none;-->
-<!--            margin: 20px auto;-->
-<!--            padding: 15px;-->
-<!--            background-color: #f8d7da;-->
-<!--            color: #721c24;-->
-<!--            border: 1px solid #f5c6cb;-->
-<!--            border-radius: 15px;-->
-<!--            width: 300px;-->
-<!--        }-->
-
-<!--        /*@media screen and (max-width: 576px) {*/-->
-<!--        /*    body {*/-->
-<!--        /*        background-image: url("/images/background.jpg");*/-->
-<!--        /*        background-size: cover;*/-->
-<!--        /*        background-position: center;*/-->
-<!--        /*        background-repeat: no-repeat;*/-->
-<!--        /*        background-attachment: fixed;*/-->
-<!--        /*    }*/-->
-<!--        /*}*/-->
-
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container">-->
-<!--    <h2>Реєстрація</h2>-->
-<!--    <form id="registrationForm" action="/api/register" method="post">-->
-<!--        <label for="register-login">Логін(латинськими символами):</label>-->
-<!--        <input placeholder="Введи свій псевдонім" type="text" id="register-login" name="login" required autocomplete="username">-->
-<!--        <label for="register-password">Пароль:</label>-->
-<!--        <input placeholder="Придумай пароль" type="password" id="register-password" name="password" required autocomplete="new-password">-->
-<!--        <label for="register-confirm-password">Підтвердження паролю:</label>-->
-<!--        <input placeholder="Повтори вигаданий пароль" type="password" id="register-confirm-password" name="confirm_password" required autocomplete="new-password">-->
-<!--        <button type="submit">Зареєструватись</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--<div id="message" class="message"></div>-->
-<!--<div class="container">-->
-<!--    <h2>Вхід</h2>-->
-<!--    <form id="loginForm" action="/api/login" method="post">-->
-<!--        <label for="login-login">Логін:</label>-->
-<!--        <input placeholder="Введи логін" type="text" id="login-login" name="login" required autocomplete="username">-->
-<!--        <label for="login-password">Пароль:</label>-->
-<!--        <input placeholder="Введи пароль" type="password" id="login-password" name="password" required autocomplete="current-password">-->
-<!--        <button type="submit">Увійти</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--<script>-->
-<!--    document.getElementById('registrationForm').addEventListener('submit', function(event) {-->
-<!--        event.preventDefault();-->
-<!--        const userName = document.getElementById('register-login').value;-->
-<!--        const password = document.getElementById('register-password').value;-->
-<!--        const confirmPassword = document.getElementById('register-confirm-password').value;-->
-<!--        const messageDiv = document.getElementById('message');-->
-<!--        if (password !== confirmPassword) {-->
-<!--            messageDiv.innerText = 'Паролі не збігаються!';-->
-<!--            messageDiv.style.color = 'red';-->
-<!--            messageDiv.style.display = 'block';-->
-<!--            return;-->
-<!--        }-->
-<!--        const registrationData = {-->
-<!--            userName: userName,-->
-<!--            password: password-->
-<!--        };-->
-<!--        fetch('/api/register', {-->
-<!--            method: 'POST',-->
-<!--            headers: {-->
-<!--                'Content-Type': 'application/json'-->
-<!--            },-->
-<!--            body: JSON.stringify(registrationData)-->
-<!--        })-->
-<!--            .then(response => {-->
-<!--            const messageDiv = document.getElementById('message');-->
-<!--            if (response.redirected) {-->
-<!--                localStorage.setItem('userName', userName);-->
-<!--                window.location.href = response.url;-->
-<!--            } else if (response.ok) {-->
-<!--                return response.json().then(data => {-->
-<!--                    localStorage.setItem('userName', data.userName);-->
-<!--                });-->
-<!--            } else {-->
-<!--                return response.text().then(errorMessage => {-->
-<!--                    messageDiv.innerText = errorMessage;-->
-<!--                    messageDiv.style.color = 'red';-->
-<!--                    messageDiv.style.display = 'block';-->
-<!--                    throw new Error(errorMessage);-->
-<!--                });-->
-<!--            }-->
-<!--        })-->
-<!--            .catch(error => {-->
-<!--            console.error('Registration failed: ', error.message);-->
-<!--        });-->
-<!--    });-->
-
-<!--    document.getElementById('loginForm').addEventListener('submit', function(event) {-->
-<!--        event.preventDefault();-->
-<!--        const userName = document.getElementById('login-login').value;-->
-<!--        const password = document.getElementById('login-password').value;-->
-<!--        const loginInData = {-->
-<!--            userName: userName,-->
-<!--            password: password-->
-<!--        };-->
-<!--        fetch('/api/login', {-->
-<!--            method: 'POST',-->
-<!--            headers: {-->
-<!--                'Content-Type': 'application/json'-->
-<!--            },-->
-<!--            body: JSON.stringify(loginInData)-->
-<!--        })-->
-<!--            .then(response => {-->
-<!--            const messageDiv = document.getElementById('message');-->
-<!--            if (response.redirected) {-->
-<!--                localStorage.setItem('userName', userName);-->
-<!--                window.location.href = response.url;-->
-<!--            } else if (response.ok) {-->
-<!--                return response.json().then(data => {-->
-<!--                    localStorage.setItem('userName', data.userName);-->
-<!--                });-->
-<!--            } else {-->
-<!--                return response.text().then(errorMessage => {-->
-<!--                    messageDiv.innerText = errorMessage;-->
-<!--                    messageDiv.style.color = 'red';-->
-<!--                    messageDiv.style.display = 'block';-->
-<!--                    throw new Error(errorMessage);-->
-<!--                });-->
-<!--            }-->
-<!--        })-->
-<!--            .catch(error => {-->
-<!--            console.error('LoginIn failed: ', error.message);-->
-<!--        });-->
-<!--    });-->
-
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->

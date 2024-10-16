@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -19,5 +17,3 @@ public class PredictionDTO implements Serializable {
     private List<Object> predictions;
     private String matchDate;
 }
-
-

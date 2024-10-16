@@ -1,6 +1,5 @@
 package ua.dymohlo.FootballPredictions.secutity;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,14 +23,8 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring().requestMatchers("/static/**", "/styles/**", "/images/**", "/js/**", "/ico/**");
-//    }
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/static/**", "/css/**", "/images/**", "/script/**", "/ico/**");
     }
-
 }

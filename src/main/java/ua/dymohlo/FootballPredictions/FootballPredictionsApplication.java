@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class FootballPredictionsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FootballPredictionsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FootballPredictionsApplication.class, args);
+    }
 
 }

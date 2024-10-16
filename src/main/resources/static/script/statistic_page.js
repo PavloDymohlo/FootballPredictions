@@ -1,65 +1,6 @@
-//async function fetchUsers() {
-//    const spinner = document.getElementById('spinner');
-//    spinner.style.display = 'block';
-//
-//    try {
-//        const response = await fetch('/api/user/users');
-//        if (!response.ok) {
-//            throw new Error('Помилка при отриманні користувачів');
-//        }
-//        const users = await response.json();
-//        displayUsers(users[0]);
-//    } catch (error) {
-//        console.error('Помилка:', error);
-//    } finally {
-//        spinner.style.display = 'none';
-//    }
-//}
-//
-//function displayUsers(users) {
-//    const usersStatisticDiv = document.getElementById('users-statistic');
-//    usersStatisticDiv.innerHTML = '';
-//    const table = document.createElement('table');
-//    table.className = 'table table-striped'; // Додаємо класи Bootstrap до таблиці
-//    table.innerHTML = `
-//        <thead>
-//            <tr>
-//                <th>Місце у рейтингу</th>
-//                <th>Ім'я користувача</th>
-//                <th>Загальний рахунок</th>
-//                <th>Місячний рахунок</th>
-//                <th>Кількість трофеїв</th>
-//                <th>Кількість прогнозів</th>
-//                <th>% вгаданих матчів</th>
-//            </tr>
-//        </thead>
-//        <tbody></tbody>
-//    `;
-//    const tableBody = table.querySelector('tbody');
-//    users.sort((a, b) => a.rankingPosition - b.rankingPosition);
-//    users.forEach(user => {
-//        const row = document.createElement('tr');
-//        row.innerHTML = `
-//            <td>${user.rankingPosition}</td>
-//            <td>${user.userName}</td>
-//            <td>${user.totalScore}</td>
-//            <td>${user.monthlyScore}</td>
-//            <td>${user.trophyCount}</td>
-//            <td>${user.predictionCount}</td>
-//            <td>${user.percentGuessedMatches}%</td>
-//        `;
-//        tableBody.appendChild(row);
-//    });
-//    usersStatisticDiv.appendChild(table);
-//}
-//
-//document.addEventListener('DOMContentLoaded', fetchUsers);
-
-
 async function fetchUsers() {
     const spinner = document.getElementById('spinner');
     spinner.style.display = 'block';
-
     try {
         const response = await fetch('/user/users');
         if (!response.ok) {
@@ -78,7 +19,7 @@ function displayUsers(users) {
     const usersStatisticDiv = document.getElementById('users-statistic');
     usersStatisticDiv.innerHTML = '';
     const table = document.createElement('table');
-    table.className = 'table table-striped'; // Додаємо класи Bootstrap до таблиці
+    table.className = 'table table-striped';
     table.innerHTML = `
         <thead>
             <tr>
@@ -93,19 +34,14 @@ function displayUsers(users) {
         </thead>
         <tbody></tbody>
     `;
-
     const tableBody = table.querySelector('tbody');
-    const currentUserName = localStorage.getItem('userName'); // Отримуємо поточного користувача
-
+    const currentUserName = localStorage.getItem('userName');
     users.sort((a, b) => a.rankingPosition - b.rankingPosition);
     users.forEach(user => {
         const row = document.createElement('tr');
-
-        // Перевіряємо, чи це поточний користувач
         if (user.userName === currentUserName) {
-            row.classList.add('highlighted-user'); // Додаємо клас для виділення
+            row.classList.add('highlighted-user');
         }
-
         row.innerHTML = `
             <td>${user.rankingPosition}</td>
             <td>${user.userName}</td>
@@ -117,13 +53,8 @@ function displayUsers(users) {
         `;
         tableBody.appendChild(row);
     });
-
     usersStatisticDiv.appendChild(table);
 }
-
-
-
-
 
 function toggleMenu() {
     const submenu = document.getElementById('submenu');

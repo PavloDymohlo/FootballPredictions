@@ -39,5 +39,4 @@ public class CacheConfig {
         template.afterPropertiesSet();
         return template;
     }
-
 }

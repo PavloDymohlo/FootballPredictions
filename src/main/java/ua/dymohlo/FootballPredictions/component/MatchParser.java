@@ -43,12 +43,6 @@ public class MatchParser {
         return matchResults;
     }
 
-
-
-
-
-
-
     public long countTotalMatches(List<Object> parsedMatches) {
         int totalMatches = 0;
         for (Object obj : parsedMatches) {
