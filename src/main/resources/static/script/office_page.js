@@ -1,8 +1,16 @@
 function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${day}/${month}`;
+}
+
+function formatDateToUkrainian(dateStr) {
+    const [day, month] = dateStr.split('/');
+    const monthNames = [
+        "січня", "лютого", "березня", "квітня", "травня", "червня",
+        "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"
+    ];
+    return `${day} ${monthNames[parseInt(month, 10) - 1]}`;
 }
 
 async function getUserName() {
@@ -199,49 +207,61 @@ async function getFutureMatches() {
     spinner.style.display = 'none';
 }
 
+
 function displayFutureMatches(results, dates) {
     const resultsContainer = document.getElementById('match-container');
     resultsContainer.innerHTML = '';
     const currentDate = new Date();
     const formattedCurrentDate = formatDate(currentDate);
+
     results.forEach((result, index) => {
         const dateGroup = document.createElement('div');
         dateGroup.className = 'date-group';
+
         const dateHeader = document.createElement('h2');
         const matchDate = dates[index];
-        dateHeader.textContent = `Матчі на ${dates[index]}`;
+        dateHeader.textContent = `Матчі на ${formatDateToUkrainian(dates[index])}`;
         dateGroup.appendChild(dateHeader);
+
         const isCurrentDate = matchDate === formattedCurrentDate;
+        const predictions = [{ date: formatDateToUkrainian(dates[index]) }];
+
         if (!result || result.length === 0 || (result.length === 1 && result[0].length === 0)) {
             const message = document.createElement('div');
             message.className = 'message no-matches';
-            message.innerHTML = `${dates[index]} матчів не буде.<br>Очікуйте наступних подій.`;
+            message.innerHTML = `${formatDateToUkrainian(dates[index])} матчів не буде.<br>Очікуйте наступних подій.`;
             message.style.textAlign = 'center';
             dateGroup.appendChild(message);
-        }
-        else {
+        } else {
             let competitionContainer = document.createElement('div');
             competitionContainer.className = 'competition-container';
             let currentCompetition = null;
             let competitionDiv;
-            let predictions = [];
+
             result[0].forEach(item => {
-                if (typeof item === 'object' && item.competition) {
-                    currentCompetition = item.competition;
-                    predictions.push({ competition: currentCompetition });
+                // Додаємо турнір з країною
+                if (typeof item === 'object' && item.tournament && item.country) {
+                    currentCompetition = { tournament: item.tournament, country: item.country };
+                    predictions.push(currentCompetition);
+
+                    // Створення нового блоку для турніру
                     competitionDiv = document.createElement('div');
                     const competitionHeader = document.createElement('h3');
-                    competitionHeader.textContent = currentCompetition;
+                    competitionHeader.textContent = `${item.country}: ${item.tournament}`;
                     competitionDiv.appendChild(competitionHeader);
                     competitionContainer.appendChild(competitionDiv);
-                } else if (Array.isArray(item) && currentCompetition) {
+                }
+                // Додаємо матчі до поточного турніру
+                else if (Array.isArray(item) && currentCompetition) {
                     const matchDiv = document.createElement('div');
                     matchDiv.className = 'match';
+
                     const team1Div = document.createElement('div');
                     team1Div.className = 'team-score';
                     const team1 = document.createElement('span');
                     team1.className = 'team';
                     team1.textContent = item[0].replace(' ?', '');
+
                     const score1 = document.createElement('input');
                     score1.className = 'score';
                     score1.type = 'number';
@@ -250,13 +270,16 @@ function displayFutureMatches(results, dates) {
                     score1.style.height = '20px';
                     score1.style.textAlign = 'center';
                     score1.disabled = isCurrentDate;
+
                     team1Div.appendChild(team1);
                     team1Div.appendChild(score1);
+
                     const team2Div = document.createElement('div');
                     team2Div.className = 'team-score';
                     const team2 = document.createElement('span');
                     team2.className = 'team';
                     team2.textContent = item[1].replace(' ?', '');
+
                     const score2 = document.createElement('input');
                     score2.className = 'score';
                     score2.type = 'number';
@@ -265,39 +288,55 @@ function displayFutureMatches(results, dates) {
                     score2.style.height = '20px';
                     score2.style.textAlign = 'center';
                     score2.disabled = isCurrentDate;
+
                     team2Div.appendChild(team2);
                     team2Div.appendChild(score2);
+
                     matchDiv.appendChild(team1Div);
                     matchDiv.appendChild(team2Div);
                     competitionDiv.appendChild(matchDiv);
+
+                    // Додаємо матч до predictions у правильному форматі
+                    predictions.push([`${item[0].replace(' ?', '')} ${score1}`, `${item[1].replace(' ?', '')} ${score2}`]);
+
                     const separator = document.createElement('div');
                     separator.style.borderTop = '1px solid rgba(0, 0, 0, 0.8)';
                     separator.style.margin = '10px 0';
                     competitionDiv.appendChild(separator);
                 }
             });
+
             const errorMessage = document.createElement('div');
             errorMessage.className = 'message error-message';
             errorMessage.textContent = 'Будь ласка, заповніть усі поля!';
             errorMessage.style.display = 'none';
             competitionContainer.appendChild(errorMessage);
+
             const submitButton = document.createElement('button');
             submitButton.className = 'submit-button';
             submitButton.textContent = 'Відправити';
             submitButton.disabled = isCurrentDate;
             competitionContainer.appendChild(submitButton);
+
             submitButton.addEventListener('click', () => {
                 const userName = localStorage.getItem('userName');
                 let allFilled = true;
+
                 const matches = competitionContainer.querySelectorAll('.match');
                 const successMessage = competitionContainer.querySelector('.success-message');
+
                 if (successMessage) {
                     successMessage.remove();
                 }
-                matches.forEach(match => {
+
+                // Очищення існуючих матчів, щоб уникнути дублювання
+                predictions.splice(1);
+
+                matches.forEach((match) => {
                     const scoreInputs = match.querySelectorAll('.score');
                     const score1 = scoreInputs[0].value.trim();
                     const score2 = scoreInputs[1].value.trim();
+
                     if (!score1) {
                         scoreInputs[0].style.border = '2px solid red';
                         allFilled = false;
@@ -310,12 +349,14 @@ function displayFutureMatches(results, dates) {
                     } else {
                         scoreInputs[1].style.border = '';
                     }
+
                     if (score1 && score2) {
                         const team1 = match.querySelectorAll('.team')[0].textContent;
                         const team2 = match.querySelectorAll('.team')[1].textContent;
-                        predictions.push([`${team1} ${score1}`, `${team2} ${score2}`]);
+                        predictions.push([`${team1} ${score1}`, `${team2} ${score2}`]); // Додаємо матч у потрібному форматі
                     }
                 });
+
                 if (!allFilled) {
                     errorMessage.style.display = 'block';
                 } else {
@@ -325,6 +366,7 @@ function displayFutureMatches(results, dates) {
                         predictions: predictions,
                         matchDate: dates[index]
                     };
+                    console.log("Дані, що відправляються:", request);
                     fetch('/user/send-predictions', {
                         method: 'POST',
                         headers: {

@@ -24,5 +24,11 @@ public class MatchController {
     public List<Object> getFutureMatches() {
         return matchService.getFutureMatches();
     }
+
+    @GetMapping("/result-event")
+    public List<Object> getResultMatches() {
+        return matchService.getMatchesResultFromApi();
+    }
+
 }
 

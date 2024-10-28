@@ -6,10 +6,8 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import ua.dymohlo.FootballPredictions.DTO.MatchStatusDto;
 import ua.dymohlo.FootballPredictions.DTO.PredictionDTO;
 import ua.dymohlo.FootballPredictions.DTO.RegisterDto;
@@ -17,7 +15,6 @@ import ua.dymohlo.FootballPredictions.DTO.LoginInDto;
 import ua.dymohlo.FootballPredictions.Entity.User;
 import ua.dymohlo.FootballPredictions.component.MatchParser;
 import ua.dymohlo.FootballPredictions.configuration.PasswordEncoderConfig;
-import ua.dymohlo.FootballPredictions.repository.CompetitionRepository;
 import ua.dymohlo.FootballPredictions.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -33,7 +30,6 @@ public class UserService {
     private final CacheManager cacheManager;
     private final MatchParser matchParser;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final CompetitionRepository competitionRepository;
     private final MatchService matchService;
 
     public User register(RegisterDto registerDto) {
@@ -290,7 +286,7 @@ public class UserService {
         Map<String, Object> currentCompetition = null;
 
         for (Object match : allMatches) {
-            if (match instanceof Map && ((Map<?, ?>) match).containsKey("competition")) {
+            if (match instanceof Map && ((Map<?, ?>) match).containsKey("tournament")) {
                 currentCompetition = (Map<String, Object>) match;
                 matchesWithStatus.add(currentCompetition);
                 continue;
