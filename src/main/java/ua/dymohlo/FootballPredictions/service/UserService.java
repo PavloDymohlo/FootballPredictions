@@ -55,6 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
     private void checkUserNameInLatin(String userName) {
         if (userName.chars().anyMatch(ch -> Character.UnicodeBlock.of(ch).equals(Character.UnicodeBlock.CYRILLIC))) {
             throw new IllegalArgumentException("Введіть псевдонім латинськими символами!");
@@ -94,6 +95,7 @@ public class UserService {
         users.forEach(user -> {
             updateUserScores(user.getUserName(), date);
         });
+        log.info("All users' predictions results have been calculated.");
     }
 
     public List<Object> comparePredictionsWithResults(String userName, String date) {
@@ -227,7 +229,7 @@ public class UserService {
             currentUser.setRankingPosition(currentRank);
         }
         userRepository.saveAll(users);
-        System.out.println(users);
+        log.info("All users are arranged according to their ranking positions.");
         return users;
     }
 

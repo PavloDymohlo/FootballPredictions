@@ -41,16 +41,13 @@ public class UserController {
         return Collections.singletonList(userService.getFutureMatchesFromCache(userName, date));
     }
 
-//    @GetMapping("/match-status")
-//    public List<Object> getAllMatchesWithPredictionStatus(@RequestHeader("userName") String userName,
-//                                                          @RequestParam("date") String date) {
-//        return Collections.singletonList(userService.getAllMatchesWithPredictionStatus(userName, date));
-//    }
-@GetMapping("/match-status")
-public List<Object> getAllMatchesWithPredictionStatus(@RequestHeader("userName") String userName,
-                                                      @RequestParam("date") String date) {
-    return Collections.singletonList(userService.comparePredictionsWithResults(userName, date));
-}
+    @GetMapping("/match-status")
+    public List<Object> getAllMatchesWithPredictionStatus(@RequestHeader("userName") String userName,
+                                                          @RequestParam("date") String date) {
+        return Collections.singletonList(userService.getAllMatchesWithPredictionStatus(userName, date));
+    }
+
+
 
     @GetMapping("/users")
     public List<Object> allUsersList() {

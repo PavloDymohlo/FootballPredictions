@@ -12,11 +12,10 @@ public class NodeScriptService {
     public String runNodeScript(String action) {
         StringBuilder result = new StringBuilder();
         ProcessBuilder processBuilder = new ProcessBuilder("node",
-                "C:\\Users\\DELL\\flashscore-scraper\\scraper.js", // Вказуємо правильний шлях
+                "C:\\Users\\DELL\\flashscore-scraper\\scraper.js",
                 action);
 
         try {
-            // Задаємо робочу директорію для процесу
             processBuilder.directory(new File("C:\\Users\\DELL\\flashscore-scraper"));
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -24,18 +23,14 @@ public class NodeScriptService {
             while ((line = reader.readLine()) != null) {
                 result.append(line).append("\n");
             }
-
             int exitCode = process.waitFor();
             if (exitCode != 0) {
                 throw new RuntimeException("Скрипт завершився з помилкою, код виходу: " + exitCode);
             }
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException("Помилка при виконанні Node.js-скрипта", e);
         }
-
         return result.toString();
     }
-
 }

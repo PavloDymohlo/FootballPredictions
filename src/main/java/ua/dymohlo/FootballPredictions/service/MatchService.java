@@ -5,10 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import ua.dymohlo.FootballPredictions.Entity.User;
 import ua.dymohlo.FootballPredictions.component.MatchParser;
+import ua.dymohlo.FootballPredictions.repository.UserRepository;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -19,6 +24,8 @@ public class MatchService {
     private final MatchParser matchParser;
     private final CacheManager cacheManager;
     private final NodeScriptService nodeScriptService;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final UserRepository userRepository;
 
     public List<Object> getFutureMatches() {
         String nodeScriptData = nodeScriptService.runNodeScript("future");
@@ -47,7 +54,6 @@ public class MatchService {
         return parsedMatches;
     }
 
-
     public List<Object> getMatchesResultFromApi() {
         String nodeScriptData = nodeScriptService.runNodeScript("past");
         List<Object> parsedMatches = matchParser.parseMatches(nodeScriptData);
@@ -72,8 +78,49 @@ public class MatchService {
                 cache.put(dateWithoutDay, parsedMatches);
             }
         }
+        int unknownMatchCount = 0;
+        for (Object match : parsedMatches) {
+            if (match instanceof List) {
+                List<String> matchDetails = (List<String>) match;
+                for (int i = 0; i < matchDetails.size(); i++) {
+                    if (matchDetails.get(i).contains("?")) {
+                        unknownMatchCount++;
+                        matchDetails.set(i, matchDetails.get(i).replace("?", "н/в"));
+                    }
+                }
+            }
+        }
+        if (unknownMatchCount>0){
+            int matchWithoutResult = unknownMatchCount/2;
+            log.info("Number of matches with unknown results: " + matchWithoutResult);
+            updateUsersPredictionCount(matchWithoutResult, targetDate);
+        }
         return parsedMatches;
     }
+
+
+    private void updateUsersPredictionCount(int matchWithoutResult, String targetDate) {
+        String formattedDate = targetDate.split(" ")[0];
+        Set<String> cachedKeys = redisTemplate.keys("userPredictions::*_" + formattedDate);
+        List<String> usersWithPredictions = new ArrayList<>();
+        for (String key : cachedKeys) {
+            String[] parts = key.split("::|_");
+            if (parts.length >= 2) {
+                String userName = parts[1];
+                usersWithPredictions.add(userName);
+            }
+        }
+        usersWithPredictions.forEach(userName -> {
+            Optional<User> optionalUser = userRepository.findByUserName(userName);
+            optionalUser.ifPresent(user -> {
+                user.setPredictionCount(user.getPredictionCount() - matchWithoutResult);
+                log.info("List of users: "+usersWithPredictions);
+                userRepository.save(user);
+                log.info("Updated prediction count for user: {}", userName);
+            });
+        });
+    }
+
 
     public List<Object> getMatchesFromCacheByDate(String targetDate) {
         Cache cache = cacheManager.getCache("matchesCache");
