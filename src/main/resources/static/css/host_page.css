@@ -68,13 +68,3 @@ button:hover {
     border-radius: 15px;
     width: 300px;
 }
-
-/*@media screen and (max-width: 576px) {*/
-/*    body {*/
-/*        background-image: url("/images/background.jpg");*/
-/*        background-size: cover;*/
-/*        background-position: center;*/
-/*        background-repeat: no-repeat;*/
-/*        background-attachment: fixed;*/
-/*    }*/
-/*}*/

@@ -17,6 +17,8 @@ import ua.dymohlo.FootballPredictions.component.MatchParser;
 import ua.dymohlo.FootballPredictions.configuration.PasswordEncoderConfig;
 import ua.dymohlo.FootballPredictions.repository.UserRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,6 +53,7 @@ public class UserService {
                 .totalScore(startCount)
                 .predictionCount(startCount)
                 .percentGuessedMatches((int) startCount)
+                .lastPredictions(LocalDateTime.now())
                 .build();
         return userRepository.save(user);
     }
@@ -84,6 +87,7 @@ public class UserService {
         User user = optionalUser.get();
         long sumNewPredictions = matchParser.countTotalMatches(predictionDTO.getPredictions());
         user.setPredictionCount(user.getPredictionCount() + sumNewPredictions);
+        user.setLastPredictions(LocalDateTime.now());
         userRepository.save(user);
         log.info("The number of forecasts for the user " + user.getUserName() + "  increased by " + sumNewPredictions + " forecasts.");
         return predictionDTO;
@@ -91,7 +95,7 @@ public class UserService {
 
     public void countUsersPredictionsResult() {
         List<User> users = userRepository.findAll();
-        String date = LocalDate.now().minusDays(1).toString();
+        String date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("dd/MM"));
         users.forEach(user -> {
             updateUserScores(user.getUserName(), date);
         });
@@ -182,6 +186,10 @@ public class UserService {
                 int team1PredictionScore = extractScore(team1Prediction);
                 int team2ResultScore = extractScore(team2Result);
                 int team2PredictionScore = extractScore(team2Prediction);
+                if (team1ResultScore == -1 || team2ResultScore == -1 ||
+                        team1PredictionScore == -1 || team2PredictionScore == -1) {
+                    return false;
+                }
                 return team1ResultScore == team1PredictionScore && team2ResultScore == team2PredictionScore;
             }
         }
@@ -189,8 +197,15 @@ public class UserService {
     }
 
     private int extractScore(String teamResult) {
+        if ("н/в".equals(teamResult)) {
+            return -1;
+        }
         String[] parts = teamResult.split(" ");
-        return Integer.parseInt(parts[parts.length - 1]);
+        try {
+            return Integer.parseInt(parts[parts.length - 1]);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     private int updatePercentGuessedMatches(User user) {
@@ -302,5 +317,20 @@ public class UserService {
 
     public List<User> allUsers() {
         return userRepository.findAll();
+    }
+
+    public void findPassiveUser() {
+        List<User> users = userRepository.findAll();
+        LocalDateTime expiredDate = LocalDateTime.now().minusDays(90);
+        users.stream()
+                .filter(user -> user.getLastPredictions() !=null && user.getLastPredictions().isBefore(expiredDate))
+                .forEach(user -> deleteUser(user.getUserName()));
+        log.info("search for passive users has taken place.");
+    }
+
+    private void deleteUser(String username) {
+        Optional<User> user = userRepository.findByUserName(username);
+        user.ifPresent(userRepository::delete);
+        log.info("delete user with username: "+username);
     }
 }

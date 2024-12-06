@@ -25,13 +25,13 @@ public class MatchController {
         return matchService.getFutureMatches();
     }
 
-//    @GetMapping("/result-event")
+    //    @GetMapping("/result-event")
 //    public List<Object> getResultMatches() {
 //        return matchService.getMatchesFromCacheByDate("02/11");
 //    }
-@GetMapping("/result-event")
-public List<Object> getResultMatches() {
-    return matchService.getMatchesResultFromApi();
-}
+    @GetMapping("/result-event")
+    public List<Object> getResultMatches() {
+        return matchService.getMatchesResultFromApi();
+    }
 }
 

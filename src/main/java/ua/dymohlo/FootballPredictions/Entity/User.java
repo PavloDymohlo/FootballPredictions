@@ -3,6 +3,8 @@ package ua.dymohlo.FootballPredictions.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +33,6 @@ public class User {
     private int percentGuessedMatches;
     @Column(name = "password")
     private String password;
+    @Column(name = "last_predictions")
+    private LocalDateTime lastPredictions;
 }

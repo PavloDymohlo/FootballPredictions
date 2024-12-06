@@ -15,28 +15,32 @@ public class UpdateDataSchedule {
     private final UserService userService;
     private final MatchService matchService;
 
-    @Scheduled(cron = "0 03 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 30 13 * * *", zone = "Europe/Kiev")
     public void getFutureMatches() {
         matchService.getFutureMatches();
     }
 
-    @Scheduled(cron = "0 08 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 31 13 * * *", zone = "Europe/Kiev")
     public void getMatchesResultFromApi() {
         matchService.getMatchesResultFromApi();
     }
 
-    @Scheduled(cron = "0 05 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 32 13 * * *", zone = "Europe/Kiev")
     public void countUsersPredictionsResult() {
         userService.countUsersPredictionsResult();
     }
 
-    @Scheduled(cron = "0 06 00 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 33 13 * * *", zone = "Europe/Kiev")
     public void rankingPosition() {
         userService.rankingPosition();
     }
 
-    @Scheduled(cron = "0 07 00 1 * ?", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 34 13 1 * ?", zone = "Europe/Kiev")
     public void userTrophyCount() {
         userService.userTrophyCount();
+    }
+    @Scheduled(cron = "0 35 13 * * *", zone = "Europe/Kiev")
+    public void findPassiveUser() {
+        userService.findPassiveUser();
     }
 }

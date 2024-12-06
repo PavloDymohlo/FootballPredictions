@@ -61,7 +61,8 @@ async function getMatchResult() {
             })
         ]);
         if (matchesResponse.status === 404) {
-            const message = `${formattedDate} матчі не відбувалися.<br>Очікуйте наступних результатів.`;
+            const formattedDateUkrainian = formatDateToUkrainian(formattedDate);
+            const message = `${formattedDateUkrainian} матчі не відбувалися.<br>Очікуйте наступних результатів.`;
             const container = document.createElement('div');
             container.className = 'date-group';
             container.innerHTML = message;
@@ -113,9 +114,11 @@ async function displayMatchResult(matches, predictions) {
         return;
     }
 
-    let currentCompetition = null;
+    let currentCompetition = '';
     let competitionDiv;
     const predictionMap = new Map();
+    const matchesContainer = document.createElement('div');
+    matchesContainer.className = 'matches-container';
 
     if (predictions !== 'no_content') {
         predictions.forEach(item => {
@@ -128,17 +131,16 @@ async function displayMatchResult(matches, predictions) {
 
     matches[0].forEach(item => {
         if (item.country && item.tournament) {
-            // Новий турнір
             currentCompetition = `${item.country} - ${item.tournament}`;
             competitionDiv = document.createElement('div');
             const competitionHeader = document.createElement('h3');
             competitionHeader.textContent = currentCompetition;
             competitionDiv.appendChild(competitionHeader);
-            container.appendChild(competitionDiv);
+            matchesContainer.appendChild(competitionDiv);
         } else if (item.match && Array.isArray(item.match) && currentCompetition) {
-            // Обробка матчу
             const matchDiv = document.createElement('div');
             matchDiv.className = 'match';
+
             if (item.predictedCorrectly) {
                 matchDiv.classList.add('correct-prediction');
             }
@@ -146,7 +148,7 @@ async function displayMatchResult(matches, predictions) {
             const team1Info = item.match[0].split(' ');
             const team2Info = item.match[1].split(' ');
             const team1Name = team1Info.slice(0, -1).join(' ');
-            const team1Score = team1Info[team1Info.length - 1];
+            const team1Score = team1Info[team1Info.length - 1] === "?" ? "матч не відбувся" : team1Info[team1Info.length - 1];
             const team2Name = team2Info.slice(0, -1).join(' ');
             const team2Score = team2Info[team2Info.length - 1];
 
@@ -155,23 +157,33 @@ async function displayMatchResult(matches, predictions) {
 
             const team1Div = document.createElement('div');
             team1Div.className = 'team-score';
+
             const team1 = document.createElement('span');
             team1.className = 'team';
             team1.textContent = team1Name;
+
             const score1 = document.createElement('span');
             score1.className = 'score';
-            score1.textContent = `${team1Score} ${predictions === 'no_content' ? '(-)' : prediction ? `(${prediction[0].split(' ').pop()})` : ''}`;
+            if (team1Score === "матч не відбувся") {
+                score1.classList.add('canceled-match');
+            }
+            score1.textContent = `${team1Score} ${team1Score === "матч не відбувся" ? '' : (predictions === 'no_content' ? '(-)' : prediction ? `(${prediction[0].split(' ').pop()})` : '')}`;
+
+
             team1Div.appendChild(team1);
             team1Div.appendChild(score1);
 
             const team2Div = document.createElement('div');
             team2Div.className = 'team-score';
+
             const team2 = document.createElement('span');
             team2.className = 'team';
             team2.textContent = team2Name;
+
             const score2 = document.createElement('span');
             score2.className = 'score';
-            score2.textContent = `${team2Score} ${predictions === 'no_content' ? '(-)' : prediction ? `(${prediction[1].split(' ').pop()})` : ''}`;
+            score2.textContent = team2Score === "?" ? "" : `${team2Score} ${predictions === 'no_content' ? '(-)' : prediction ? `(${prediction[1].split(' ').pop()})` : ''}`;
+
             team2Div.appendChild(team2);
             team2Div.appendChild(score2);
 
@@ -181,9 +193,9 @@ async function displayMatchResult(matches, predictions) {
         }
     });
 
+    container.appendChild(matchesContainer);
     resultsContainer.appendChild(container);
 }
-
 
 async function getFutureMatches() {
     const spinner = document.getElementById('spinner');
