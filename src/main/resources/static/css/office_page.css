@@ -1,3 +1,275 @@
+/*body {*/
+/*    font-family: 'Roboto', sans-serif;*/
+/*    line-height: 1.6;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    background-image: url("/images/background.jpg");*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*    background-repeat: no-repeat;*/
+/*    background-attachment: fixed;*/
+/*}*/
+
+/*#resultsContainer, #match-container {*/
+/*    width: 100%;*/
+/*    max-width: 600px;*/
+/*}*/
+
+/*h2 {*/
+/*    color: #333;*/
+/*    border-bottom: 2px solid #333;*/
+/*    padding-bottom: 0;*/
+/*    text-align: center;*/
+/*}*/
+
+/*h3 {*/
+/*    font-size: 15px;*/
+/*    margin: 5px 5px;*/
+/*    color: #444;*/
+/*    text-align: left;*/
+/*}*/
+
+/*h4 {*/
+/*    color: #444;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.date-group {*/
+/*    background: rgba(255, 255, 255, 0.9);*/
+/*    margin: 10px;*/
+/*    padding: 10px;*/
+/*    border-radius: 5px;*/
+/*    box-shadow: 0 2px 5px rgba(0,0,0,0.1);*/
+/*}*/
+
+/*#user-name{*/
+/*    background: rgba(255, 255, 255, 0.9);*/
+/*    margin: 10px;*/
+/*    padding: 10px;*/
+/*    border-radius: 5px;*/
+/*    box-shadow: 0 2px 5px rgba(0,0,0,0.1);*/
+/*    text-align: center;*/
+/*    width: 550px;*/
+/*}*/
+
+/*.match {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    padding: 5px 5px;*/
+/*    border-bottom: 1px solid #eee;*/
+/*    border-bottom: 1px solid #ccc;*/
+/*}*/
+
+/*.match:last-child {*/
+/*    border-bottom: none;*/
+/*}*/
+
+/*.team-score {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    font-size: 12px;*/
+/*}*/
+
+/*.team-score:first-of-type {*/
+/*    margin-bottom: 5px;*/
+/*}*/
+
+/*.team-score:last-of-type {*/
+/*    margin-bottom: 0;*/
+/*}*/
+
+/*.team {*/
+/*    flex: 1;*/
+/*}*/
+
+/*.score {*/
+/*    font-weight: bold;*/
+/*    margin-left: 20px;*/
+/*}*/
+
+/*.correct-prediction {*/
+/*    background-color: rgba(212, 237, 218, 0.7);*/
+/*}*/
+
+/*.date-group {*/
+/*    margin-bottom: 30px;*/
+/*}*/
+
+/*input[type=number]::-webkit-outer-spin-button,*/
+/*input[type=number]::-webkit-inner-spin-button {*/
+/*    -webkit-appearance: none;*/
+/*    margin: 0;*/
+/*}*/
+
+/*input[type=number] {*/
+/*    -moz-appearance: textfield;*/
+/*}*/
+
+/*button {*/
+/*    background-color: #42C2DF;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    font-size: 18px;*/
+/*    transition: background-color 0.3s;*/
+/*    width: 100%;*/
+/*    display: block;*/
+/*    margin: 20px auto;*/
+/*    padding: 10px 0;*/
+/*    text-align: center;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+/*button:hover {*/
+/*    background-color: #3594A9;*/
+/*}*/
+
+/*.spinner {*/
+/*    width: 200px;*/
+/*    height: 200px;*/
+/*    background-image: url("/images/spinner.gif");*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*    background-size: contain;*/
+/*    position: fixed;*/
+/*    top: 50%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%);*/
+/*    z-index: 1000;*/
+/*}*/
+
+/*.message {*/
+/*    padding: 10px;*/
+/*    margin-top: 10px;*/
+/*    text-align: center;*/
+/*    font-size: 18px;*/
+/*    border: 2px solid rgba(0, 0, 0, 0.2);*/
+/*    margin: 20px auto;*/
+/*    padding: 10px 0;*/
+/*    width: 100%;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+/*.error-message {*/
+/*    background-color: rgba(255, 0, 0, 0.1);*/
+/*    color: red;*/
+/*}*/
+
+/*.success-message {*/
+/*    background-color: rgba(212, 237, 218, 0.7);*/
+/*    color: green;*/
+/*}*/
+
+/*.burger-menu {*/
+/*    position: fixed;*/
+/*    top: 30px;*/
+/*    right: 30px;*/
+/*    cursor: pointer;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: space-around;*/
+/*    width: 40px;*/
+/*    height: 30px;*/
+/*}*/
+
+/*.bar {*/
+/*    height: 5px;*/
+/*    width: 100%;*/
+/*    background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);*/
+/*    opacity: 0.8;*/
+/*}*/
+
+/*.menu {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    top: 40px;*/
+/*    right: 10px;*/
+/*    background: rgba(255, 255, 255, 0.9);*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*    z-index: 1000;*/
+/*    width: 200px;*/
+/*    padding: 5px;*/
+/*}*/
+
+/*.menu button {*/
+/*    display: block;*/
+/*    width: 100%;*/
+/*    padding: 10px;*/
+/*    border: none;*/
+/*    background: none;*/
+/*    text-align: left;*/
+/*    font-size: 16px;*/
+/*    color: black;*/
+/*    margin: 5px 0;*/
+/*}*/
+
+/*.menu button:hover {*/
+/*    background-color: #f0f0f0;*/
+/*}*/
+
+/*.menu-header {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 5px;*/
+/*}*/
+
+/*.close-button {*/
+/*    background: none;*/
+/*    border: none;*/
+/*    font-size: 18px;*/
+/*    cursor: pointer;*/
+/*    color: black;*/
+/*}*/
+
+/*.menu-header .close-button {*/
+/*    display: none;*/
+/*}*/
+
+/*.menu.open .menu-header .close-button {*/
+/*    display: block;*/
+/*    background: rgba(255, 255, 255, 0.9);*/
+/*}*/
+
+
+
+
+/*.canceled-match {*/
+/*    position: relative;*/
+/*    top: 10px;*/
+/*    display: inline-block;*/
+/*}*/
+
+/*@media screen and (max-width: 800px) {*/
+/*    .burger-menu {*/
+/*        position: fixed;*/
+/*        top: 10px;*/
+/*        right: 10px;*/
+/*        cursor: pointer;*/
+/*        z-index: 1000;*/
+/*        font-size: 30px;*/
+/*        padding: 10px;*/
+/*        border-radius: 5px;*/
+/*        background: none;*/
+/*    }*/
+
+/*    #user-name{*/
+/*        background: rgba(255, 255, 255, 0.9);*/
+/*        width: 90%;*/
+/*        margin: 10px;*/
+/*        padding: 10px;*/
+/*        border-radius: 5px;*/
+/*        box-shadow: 0 2px 5px rgba(0,0,0,0.1);*/
+/*        text-align: center;*/
+
+/*    }*/
+/*}*/
+
+
 body {
     font-family: 'Roboto', sans-serif;
     line-height: 1.6;
@@ -164,79 +436,136 @@ button:hover {
     color: green;
 }
 
+/* Оновлений стиль для бургер-меню */
 .burger-menu {
     position: fixed;
-    top: 30px;
-    right: 30px;
+    top: 15px;
+    left: 15px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 40px;
-    height: 30px;
+    width: 45px;
+    height: 45px;
+    z-index: 1001;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
+.burger-menu:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Змінюємо стиль, щоб бургер зникав при відкритому меню */
+.burger-menu.active {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease, visibility 0s 0.3s, transform 0.3s ease;
+}
+
+/* Стилізація смужок бургер-меню */
 .bar {
-    height: 5px;
+    height: 3px;
     width: 100%;
-    background: linear-gradient(to bottom, #0057b8 50%, #ffd100 50%);
-    opacity: 0.8;
+    background: linear-gradient(to right, #0057b8 0%, #ffd100 100%);
+    margin: 3px 0;
+    border-radius: 3px;
+    transition: 0.4s;
 }
 
+/* Стиль для шторки-меню */
 .menu {
     display: none;
     position: fixed;
-    top: 40px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    top: 0;
+    left: -300px;
+    width: 270px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    width: 200px;
-    padding: 5px;
+    transition: left 0.5s ease; /* Повільніша анімація */
+    overflow-y: auto;
+    padding-top: 80px;
+    border-radius: 0 15px 15px 0;
+}
+
+.menu.open {
+    left: 0;
 }
 
 .menu button {
     display: block;
-    width: 100%;
-    padding: 10px;
+    width: 90%;
+    margin: 10px auto;
+    padding: 12px 15px;
     border: none;
-    background: none;
+    background: rgba(255, 255, 255, 0.7);
     text-align: left;
     font-size: 16px;
-    color: black;
-    margin: 5px 0;
+    color: #333;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .menu button:hover {
-    background-color: #f0f0f0;
+    background-color: rgba(66, 194, 223, 0.2);
+    transform: translateX(5px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .menu-header {
     position: absolute;
-    top: 0;
-    right: 5px;
+    top: 15px;
+    right: 15px;
 }
 
 .close-button {
-    background: none;
-    border: none;
-    font-size: 18px;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px !important;
     cursor: pointer;
-    color: black;
+    color: #555;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.3s ease !important;
 }
 
-.menu-header .close-button {
+.close-button:hover {
+    background: rgba(255, 220, 220, 0.9) !important;
+    transform: rotate(90deg) !important;
+}
+
+/* Напівпрозорий оверлей при відкритому меню */
+.overlay {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.5s ease; /* Повільніша анімація */
 }
 
-.menu.open .menu-header .close-button {
+.overlay.active {
     display: block;
-    background: rgba(255, 255, 255, 0.9);
+    opacity: 1;
 }
-
-
-
 
 .canceled-match {
     position: relative;
@@ -244,27 +573,29 @@ button:hover {
     display: inline-block;
 }
 
+/* Оновлення для кращого вигляду на мобільних пристроях */
 @media screen and (max-width: 800px) {
     .burger-menu {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        font-size: 30px;
-        padding: 10px;
-        border-radius: 5px;
-        background: none;
+        padding: 8px;
     }
 
-    #user-name{
+    .menu {
+        width: 80%;
+    }
+
+    .menu button {
+        padding: 15px 10px;
+        font-size: 18px;
+    }
+
+    #user-name {
         background: rgba(255, 255, 255, 0.9);
         width: 90%;
         margin: 10px;
         padding: 10px;
+        margin-top: 50px;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         text-align: center;
-
     }
 }

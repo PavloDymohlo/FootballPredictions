@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.dymohlo.FootballPredictions.DTO.RegisterDto;
 import ua.dymohlo.FootballPredictions.Entity.User;
-import ua.dymohlo.FootballPredictions.service.UserService;
+import ua.dymohlo.FootballPredictions.api.AuthService;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/register")
 public class RegisterController {
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping
     public User register(@RequestBody RegisterDto registerDto, HttpServletResponse response) {
-        User user = userService.register(registerDto);
+        User user = authService.register(registerDto);
         response.setHeader("Location", "/office-page");
         response.setStatus(HttpStatus.FOUND.value());
         return user;

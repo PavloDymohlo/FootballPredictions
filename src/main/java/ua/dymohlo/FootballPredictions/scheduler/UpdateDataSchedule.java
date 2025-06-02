@@ -4,43 +4,44 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ua.dymohlo.FootballPredictions.service.MatchService;
-import ua.dymohlo.FootballPredictions.service.UserService;
-
+import ua.dymohlo.FootballPredictions.api.PredictionService;
+import ua.dymohlo.FootballPredictions.api.UserRankingService;
+import ua.dymohlo.FootballPredictions.service.MatchServiceImpl;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateDataSchedule {
-    private final UserService userService;
-    private final MatchService matchService;
+    private final UserRankingService userRankingService;
+    private final PredictionService predictionService;
+    private final MatchServiceImpl matchServiceImpl;
 
-    @Scheduled(cron = "0 30 13 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 21 09 * * *", zone = "Europe/Kiev")
     public void getFutureMatches() {
-        matchService.getFutureMatches();
+        matchServiceImpl.getFutureMatches();
     }
 
-    @Scheduled(cron = "0 31 13 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 52 08 * * *", zone = "Europe/Kiev")
     public void getMatchesResultFromApi() {
-        matchService.getMatchesResultFromApi();
+        matchServiceImpl.getMatchesResultFromApi();
     }
 
-    @Scheduled(cron = "0 32 13 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 02 07 * * *", zone = "Europe/Kiev")
     public void countUsersPredictionsResult() {
-        userService.countUsersPredictionsResult();
+        predictionService.countAllUsersPredictionsResult();
     }
-
-    @Scheduled(cron = "0 33 13 * * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 03 07 * * *", zone = "Europe/Kiev")
     public void rankingPosition() {
-        userService.rankingPosition();
+        userRankingService.updateRankingPositions();
     }
 
-    @Scheduled(cron = "0 34 13 1 * ?", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 04 07 1 * ?", zone = "Europe/Kiev")
     public void userTrophyCount() {
-        userService.userTrophyCount();
+        userRankingService.updateTrophyCounts();
     }
-    @Scheduled(cron = "0 35 13 * * *", zone = "Europe/Kiev")
+
+    @Scheduled(cron = "0 05 07 * * *", zone = "Europe/Kiev")
     public void findPassiveUser() {
-        userService.findPassiveUser();
+        userRankingService.removeInactiveUsers();
     }
 }

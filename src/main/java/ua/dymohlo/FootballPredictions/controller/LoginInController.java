@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.dymohlo.FootballPredictions.DTO.LoginInDto;
-import ua.dymohlo.FootballPredictions.service.UserService;
+import ua.dymohlo.FootballPredictions.api.AuthService;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/login")
 public class LoginInController {
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping
     public String loginIn(@RequestBody LoginInDto loginInDto, HttpServletResponse response) {
-        userService.loginIn(loginInDto);
+        authService.loginIn(loginInDto);
         response.setHeader("Location", "/office-page");
         response.setStatus(HttpStatus.FOUND.value());
         return "Success";

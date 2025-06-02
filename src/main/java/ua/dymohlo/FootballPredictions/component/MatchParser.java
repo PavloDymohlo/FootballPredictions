@@ -1,18 +1,13 @@
 package ua.dymohlo.FootballPredictions.component;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +19,8 @@ public class MatchParser {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Object> result = new ArrayList<>();
         try {
-            List<Map<String, Object>> matches = objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+            List<Map<String, Object>> matches = objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {
+            });
             for (Map<String, Object> match : matches) {
                 if (match.containsKey("date") && result.isEmpty()) {
                     result.add(Map.of("date", match.get("date")));

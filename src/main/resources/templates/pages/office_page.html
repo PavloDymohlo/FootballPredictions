@@ -8,6 +8,7 @@
     <link rel="icon" href="/ico/favicon.ico" type="image/x-icon">
 </head>
 <body>
+<div class="overlay" id="overlay"></div>
 <div class="burger-menu" id="burgerButton" onclick="toggleMenu()">
     <div class="bar"></div>
     <div class="bar"></div>
@@ -15,7 +16,7 @@
 </div>
 <div class="menu" id="submenu">
     <div class="menu-header">
-        <button class="close-button" onclick="toggleMenu()">✖</button>
+        <button class="close-button" onclick="closeMenu()">✖</button>
     </div>
     <button onclick="showStatistics()">Статистика</button>
     <button onclick="showRules()">Правила гри</button>

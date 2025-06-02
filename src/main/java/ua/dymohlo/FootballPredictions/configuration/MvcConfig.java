@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Configuration
-//@EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
